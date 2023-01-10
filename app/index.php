@@ -3,6 +3,7 @@
 use App\Routes\Route;
 
 require_once 'vendor/autoload.php';
+require_once 'headers.php';
 
 $controllerDir = dirname(__FILE__) . '/src/Controllers';
 $dirs = scandir($controllerDir);
@@ -39,11 +40,11 @@ foreach ($routesObj as $route) {
         continue;
     }
 
-    $controlerClassName = $route->getController();
+    $controllerClassName = $route->getController();
     $action = $route->getAction();
     $params = $route->mergeParams($url);
 
-    new $controlerClassName($action, $params);
+    new $controllerClassName($action, $params);
     exit();
 }
 
