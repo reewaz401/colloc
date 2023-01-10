@@ -61,6 +61,7 @@ CREATE TABLE `monthly_fee` (
   `id` int(11) NOT NULL,
   `flat_share_id` int(11) NOT NULL,
   `fee_amount` int(255) NOT NULL,
+  `fee_name` varchar(255) NOT NULL,
   `date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
