@@ -17,7 +17,7 @@ services:
             dockerfile: Dockerfile
         restart: always
         ports:
-            - "1221:80"
+            - "1200:80"
         volumes:
             - ./app:/var/www/html
 
