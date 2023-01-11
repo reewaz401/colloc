@@ -90,11 +90,12 @@ CREATE TABLE `roomate_has_flat_share` (
 
 CREATE TABLE `roommate` (
   `id` int(11) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `identifiant` varchar(255) NOT NULL,
+  `pwd` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
   `nom` varchar(255) NOT NULL,
   `prenom` varchar(255) NOT NULL,
   `mail` varchar(255) NOT NULL,
+  `rol` varchar(255) NULL,
   `date_naissance` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
