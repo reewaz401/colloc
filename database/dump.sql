@@ -45,9 +45,10 @@ CREATE TABLE `expenditure` (
 
 CREATE TABLE `flat_share` (
   `id` int(11) NOT NULL,
-  `adresse` int(11) NOT NULL,
-  `date_debut` date NOT NULL,
-  `date_fin` date NOT NULL,
+  `adresse` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
   `image` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
