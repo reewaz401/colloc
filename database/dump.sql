@@ -45,7 +45,7 @@ CREATE TABLE `expenditure` (
 
 CREATE TABLE `flat_share` (
   `id` int(11) NOT NULL,
-  `adresse` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
