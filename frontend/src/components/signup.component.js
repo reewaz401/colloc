@@ -1,19 +1,22 @@
 import React, { Component, useState } from 'react'
-import { postSignOut } from '../controller/user_controller';
+import { postsignIn, postSignOut, postsignUp } from '../controller/user_controller';
+import  { useNavigate } from 'react-router-dom'
 export default function Login() {
   const [userInfo, setUesrInfo] = useState({
-    prenom: "",
-    nom: "",
-    identifiant: "",
-    mail: "",
-    password: "",
-
+firstname: "",
+lastname: "",
+username: "",
+email: "",
+pwd: "",
+birthdate : ""
   });
+  const navigate = useNavigate();
   const handleChange = (event) => {
     setUesrInfo({ ...userInfo, [event.target.name]: event.target.value });
   };
   const handleSubmit = (event) => {
-    postSignOut(userInfo);
+    postsignUp(userInfo);
+    navigate('/colloc_view')
     // prevents the submit button from refreshing the page
     event.preventDefault();
     
@@ -27,10 +30,10 @@ export default function Login() {
           <label>Prenom</label>
           <input
             type="text"
-            name="prenom"
+            name="firstname"
             className="form-control"
             placeholder="Prenom"
-            value={userInfo.prenom}
+            value={userInfo.firstname}
             onChange={handleChange}
           />
         </div>
@@ -38,10 +41,10 @@ export default function Login() {
           <label>Nom</label>
           <input
             type="text"
-            name="nom"
+            name="lastname"
             className="form-control"
             placeholder="Nom"
-            value={userInfo.nom}
+            value={userInfo.lastname}
             onChange={handleChange}
           />
         </div>
@@ -50,10 +53,10 @@ export default function Login() {
           <label>Identifiant</label>
           <input
             type="text"
-            name="identifiant"
+            name="username"
             className="form-control"
             placeholder="Identifiant"
-            value={userInfo.identifiant}
+            value={userInfo.username}
             onChange={handleChange}
            
           />
@@ -62,10 +65,10 @@ export default function Login() {
           <label>Email address</label>
           <input
             type="email"
-            name="mail"
+            name="email"
             className="form-control"
             placeholder="Enter email"
-            value={userInfo.mail}
+            value={userInfo.email}
             onChange={handleChange}
           />
         </div>
@@ -73,10 +76,10 @@ export default function Login() {
           <label>Password</label>
           <input
             type="password"
-            name="password"
+            name="pwd"
             className="form-control"
             placeholder="Enter password"
-            value={userInfo.password}
+            value={userInfo.pwd}
             onChange={handleChange}
            
           />
@@ -101,9 +104,6 @@ export default function Login() {
             Submit
           </button>
         </div>
-        <p className="forgot-password text-right">
-          Forgot <a href="#">password?</a>
-        </p>
         </form>
         </div>
         </div>

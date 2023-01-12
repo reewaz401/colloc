@@ -19,7 +19,7 @@
     "react": "^18.0.0",
     "react-advanced-form": "^1.7.2",
     "react-dom": "^18.0.0",
-    "react-router-dom": "^6.3.0",
+    "react-router-dom": "^6.6.2",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },

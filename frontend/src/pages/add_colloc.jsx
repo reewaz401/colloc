@@ -6,12 +6,14 @@ import { TextField } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import AddIcon from '@mui/icons-material/Add';
+import  { useNavigate } from 'react-router-dom'
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 export default function AddColloc() {
   const [expense, setExpense] = useState([]);
   const [numExpense, setNumExpense] = useState([1]);
+  const navigate = useNavigate();
 
   const handleTypeExpense = (event, index) => {
     const mapInfo = { "id": index, "key": event.target.value, value: "" };
@@ -34,7 +36,7 @@ export default function AddColloc() {
     setCollocInfo({ ...collocInfo, [event.target.name]: event.target.value });
   };
     const handleSubmit = (event) => {
-        createColloc(collocInfo);
+      navigate("/invite_collocation");
     // prevents the submit button from refreshing the page
     event.preventDefault();
     
@@ -115,7 +117,7 @@ export default function AddColloc() {
             </IconButton>
         <div className="d-grid">
           <button type="submit" name="submit" className="btn btn-primary">
-            Create
+            Suivant
           </button>
         </div>
         </form>

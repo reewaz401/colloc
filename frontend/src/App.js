@@ -1,16 +1,23 @@
-import React from 'react'
+import React ,{ useState, useEffect } from 'react'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-
+import AddIcon from '@mui/icons-material/Add';
 import Login from './components/login.component'
 import SignUp from './components/signup.component'
 import AddColloc from './pages/add_colloc'
+import IconButton from '@mui/material/IconButton';
 // import CollocTable from './pages/budget_division'
 import InviteColloc from './pages/invite_collocation'
 import CollocView from './pages/colloc_view'
+import RePwd from './pages/rePwd';
 
 function App() {
+  let pathurl;
+  // componentDidUpdate(() => {
+  //   console.log("Asa");
+  //    pathurl = window.location.pathname;
+  // });
   return (
     <Router>
       <div className="App">
@@ -46,6 +53,23 @@ function App() {
                     Colloc View
                   </Link>
                 </li>
+                {
+                  pathurl === "/colloc_view"?
+                  <IconButton color="red" aria-label="add to shopping cart" onClick={(e) => {
+                  
+                    
+                    // numExpense.forEach((ele, index) => {
+                    //   const values = numExpense;
+                    //   console.log(values);
+                    //   values.add(index);
+                    //   setNumExpense(values);
+                    // })
+                   
+                        }}>
+                    <AddIcon />
+                    </IconButton>
+                    : <div></div>
+                  }
               </ul>
             </div>
           </div>
@@ -61,6 +85,7 @@ function App() {
               <Route path="/create_colloc" element={<AddColloc />} />
               <Route path="/invite_collocation" element={<InviteColloc />} />
               <Route path="/colloc_view" element={<CollocView />} />
+              <Route path="/repwd" element={<RePwd />} />
             </Routes>
       </div>
     </Router>

@@ -8,6 +8,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import  { useNavigate } from 'react-router-dom'
+import { createColloc } from '../controller/colloc_controller';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -28,6 +30,7 @@ const rows = [
 ];
 
 export default function InviteColloc() {
+    const navigate = useNavigate();
     const [selectColloc, setSelectColloc] = useState();
     const [emailColloc, setEmailColloc] = useState();
     const [colloc, setColloc] = useState([
@@ -40,7 +43,11 @@ export default function InviteColloc() {
         { id: 7, email: 'Clifford', },
         { id: 8, email: 'Frances', },
         { id: 9, email: 'Roxie', },
-      ]);
+    ]);
+    const handleCreate = () => {
+        createColloc();
+        navigate("/colloc_view");
+    }
   return (
       <div style={{ height: 400, width: '100%', background: "white", marginTop: "100px" }}>
               {/* <Stack direction="row" spacing={1}> */}
@@ -83,8 +90,8 @@ export default function InviteColloc() {
               }}
           />
           <div className='mt-3'>
-         <Button variant="contained" endIcon={<SendIcon />}>
-  Suivant
+         <Button variant="contained" endIcon={<SendIcon />} onClick={handleCreate}>
+  Create
               </Button>
               </div>
           {/* <Button variant="contained" onClick={(e) => divideBudget(budget, colloc.length).then((rows) => setEachBudgett(rows))}>Divide</Button>

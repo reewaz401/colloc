@@ -7,9 +7,25 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import PersonIcon from '@mui/icons-material/Person';
 import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add';
+import  { useNavigate } from 'react-router-dom'
 
 export default function MediaCard() {
+  const navigate = useNavigate();
   return (
+    <>
+    <IconButton color="red" style={{ top: 50, }} aria-label="add to shopping cart" onClick={(e) => {
+                  navigate('/create_colloc')
+      // numExpense.forEach((ele, index) => {
+      //   const values = numExpense;
+      //   console.log(values);
+      //   values.add(index);
+      //   setNumExpense(values);
+      // })
+     
+          }}>
+      <AddIcon />
+      </IconButton>
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
         sx={{ height: 140 }}
@@ -32,6 +48,7 @@ export default function MediaCard() {
                   13
 </IconButton>
       </CardActions>
-    </Card>
+      </Card>
+      </>
   );
 }
