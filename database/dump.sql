@@ -49,7 +49,7 @@ CREATE TABLE `flat_share` (
   `name` varchar(255) NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
-  `image` varchar(255) NOT NULL
+  `image` varchar(255) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -77,9 +77,9 @@ CREATE TABLE `roomate_has_flat_share` (
   `roommate_id` int(11) NOT NULL,
   `flat_share_id` int(11) NOT NULL,
   `role` tinyint(1) DEFAULT 0,
-  `rent_pro_rata` int(255) NOT NULL,
+  `rent_pro_rata` int(255) NULL,
   `entry_date` date NOT NULL DEFAULT current_timestamp(),
-  `exit_date` date NOT NULL
+  `exit_date` date NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
