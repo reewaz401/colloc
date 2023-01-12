@@ -1,8 +1,10 @@
 import React, { Component, useState } from 'react'
+import { postsignIn } from '../controller/user_controller';
 import '../index.css'
-import { postsignIn } from '../controller/signIn_controller';
+import SimpleSnackBar from './snackBar';
 export default function Login() {
-  const [userInfo, setUesrInfo] = useState({email:"",password:""});
+  const [userInfo, setUesrInfo] = useState({mail:"",password:""});
+  const [showSnack, setShowSanck] = useState(false);
   const handleChange = (event) => {
     setUesrInfo({ ...userInfo, [event.target.name]: event.target.value });
   };
@@ -12,7 +14,8 @@ export default function Login() {
     event.preventDefault();
     
   };
-  return (
+  return (<>
+    <SimpleSnackBar show={showSnack}/>
     <div className="auth-wrapper">
       <div className='auth-inner'>
       <form onSubmit={handleSubmit}>
@@ -21,10 +24,10 @@ export default function Login() {
           <label>Email address</label>
           <input
             type="email"
-            name="email"
+            name="mail"
             className="form-control"
             placeholder="Enter email"
-            value={userInfo.email}
+            value={userInfo.mail}
             onChange={handleChange}
           />
         </div>
@@ -65,6 +68,7 @@ export default function Login() {
         </p>
       </form>
       </div>
-      </div>
+    </div>
+    </>
     )
 }

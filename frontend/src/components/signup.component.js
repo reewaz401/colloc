@@ -1,12 +1,11 @@
 import React, { Component, useState } from 'react'
-import { postsignIn } from '../controller/signIn_controller';
-import { postSignOut } from '../controller/signOut_controller';
+import { postSignOut } from '../controller/user_controller';
 export default function Login() {
   const [userInfo, setUesrInfo] = useState({
-    firstname: "",
-    lastname: "",
-    username: "",
-    email: "",
+    prenom: "",
+    nom: "",
+    identifiant: "",
+    mail: "",
     password: "",
 
   });
@@ -28,10 +27,10 @@ export default function Login() {
           <label>Prenom</label>
           <input
             type="text"
-            name="firstname"
+            name="prenom"
             className="form-control"
             placeholder="Prenom"
-            value={userInfo.firstname}
+            value={userInfo.prenom}
             onChange={handleChange}
           />
         </div>
@@ -39,10 +38,10 @@ export default function Login() {
           <label>Nom</label>
           <input
             type="text"
-            name="lastname"
+            name="nom"
             className="form-control"
             placeholder="Nom"
-            value={userInfo.lastname}
+            value={userInfo.nom}
             onChange={handleChange}
           />
         </div>
@@ -51,10 +50,10 @@ export default function Login() {
           <label>Identifiant</label>
           <input
             type="text"
-            name="username"
+            name="identifiant"
             className="form-control"
             placeholder="Identifiant"
-            value={userInfo.username}
+            value={userInfo.identifiant}
             onChange={handleChange}
            
           />
@@ -63,10 +62,10 @@ export default function Login() {
           <label>Email address</label>
           <input
             type="email"
-            name="email"
+            name="mail"
             className="form-control"
             placeholder="Enter email"
-            value={userInfo.email}
+            value={userInfo.mail}
             onChange={handleChange}
           />
         </div>
