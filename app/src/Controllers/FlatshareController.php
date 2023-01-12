@@ -20,7 +20,7 @@ class FlatshareController extends AbstractController
 
         $flatshareManager = new FlatshareManager(new PDOFactory());
 
-        $flatshareManager->createFlatshare($name, $address, $start_date, $end_date);
+        $flatshareManager->createFlatshare($id_creator, $name, $address, $start_date, $end_date);
 
     }
 

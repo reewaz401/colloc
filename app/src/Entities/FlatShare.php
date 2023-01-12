@@ -68,7 +68,8 @@ class FlatShare extends BaseEntity
     }
 
     /**
-     * @param \DateTime $start_date
+     * @param \DateTime
+     * /^([0-9]{4})[\-\/]([0-9]{2})[\-\/]([0-9]{2})$/
      */
     public function setStartDate($start_date): void
     {
