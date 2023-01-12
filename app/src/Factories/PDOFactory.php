@@ -6,12 +6,12 @@ use App\Interfaces\Database;
 
 class PDOFactory implements Database
 {
-    private $host;
-    private $dbName;
-    private $userName;
-    private $password;
+    private string $host;
+    private string $dbName;
+    private string $userName;
+    private string $password;
 
-    public function __construct(string $host = "db", string $dbName = "data", string $userName = "root", string $password = "password")
+    public function __construct(string $host = "database", string $dbName = "data", string $userName = "root", string $password = "password")
     {
         $this->host = $host;
         $this->dbName = $dbName;
