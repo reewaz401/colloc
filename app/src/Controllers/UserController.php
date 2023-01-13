@@ -78,7 +78,9 @@ class UserController extends AbstractController
             $this->renderJsonError(403, "Ce pseudo est déja utilisé, veuillez en choisir un autre.");
         }else{
             $userManager->creatUser($username, $pwd_hash, $firstname, $lastname, $email, $birthdate);
-            $getUserInfo = $userManager->readUser($username);
+
+            $getUserInfo = $userManager->readUserReturn($username);
+
             $this->renderJson([$getUserInfo]);
 
         }
