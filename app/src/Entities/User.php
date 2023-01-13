@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entitys;
+namespace App\Entities;
 
 use App\Interfaces\PasswordProtectedInterface;
 use App\Interfaces\UserInterface;
@@ -59,7 +59,7 @@ class User extends BaseEntity
         return $this;
     }
 
-    public function setBirthdate(string $birthdate): User
+    public function setBirthdate($birthdate): User
     {
         $this->birthdate = $birthdate;
         return $this;
@@ -109,6 +109,17 @@ class User extends BaseEntity
     public function getBirthdate()
     {
         return $this->birthdate;
+    }
+
+    public function getUserInfo()
+    {
+        $object = new User();
+        $object->username = $this->username;
+        $object->username = $this->lastname;
+        $object->username = $this->firstname;
+        
+        return $object;
+
     }
 
     //midelwares

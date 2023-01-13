@@ -23,4 +23,13 @@ class ExpenditureController extends AbstractController
     $amount = $amount / $countUser;
     $expenditureManager->createExpenditure($expenditureName, $flat_share_id, $amount, $creation_date, $id_creator, $queryUser);
   }
+  #[Route('/update_payed', name: "create-expenditure", methods: ["POST", "GET"])]
+  public function update_payed()
+  {
+    $userId = $_REQUEST['user_id'];
+    $expenditureId = $_REQUEST['expenditureId'];
+    $expenditureManageUpdate = new ExpenditureManager(new PDOFactory());
+
+    $expenditureManageUpdate->update_payed($userId, $expenditureId);
+  }
 }
