@@ -10,6 +10,7 @@ class ExpenditureManager extends BaseManager
 {
   public function createExpenditure(string $expenditureName, int $flat_share_id, int $amount, string $creation_date)
   {
+
     $queryUser = $this->pdo->prepare('SELECT roommate_id FROM roomate_has_flat_share WHERE flat_share_id=:actual_flat_share_id');
     $queryUser->bindValue('actual_flat_share_id', $flat_share_id, \PDO::PARAM_INT);
     $queryUser->execute();

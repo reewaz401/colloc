@@ -8,7 +8,7 @@ use PDO;
 class Expenditure extends BaseEntity
 {
   private int $id;
-  private int $roomateId;
+  private int $roommateId;
   private int $flatShareId;
   private string $expenditureName;
   private int $amount;
