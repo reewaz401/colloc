@@ -36,9 +36,17 @@ class ExpenditureManager extends BaseManager
   }
   public function userFlatShare($flat_share_id)
   {
-    $queryCountUser = $this->pdo->prepare('SELECT  roommate_id FROM roomate_has_flat_share WHERE flat_share_id=:actual_flat_share_id');
-    $queryCountUser->bindValue('actual_flat_share_id', $flat_share_id, \PDO::PARAM_INT);
-    $queryCountUser->execute();
-    return $queryCountUser;
+    $queryUser = $this->pdo->prepare('SELECT  roommate_id FROM roomate_has_flat_share WHERE flat_share_id=:actual_flat_share_id');
+    $queryUser->bindValue('actual_flat_share_id', $flat_share_id, \PDO::PARAM_INT);
+    $queryUser->execute();
+    return $queryUser;
+  }
+  public function updatePayed(int $userId, int $expenditureId)
+  {
+    $queryPayed = $this->pdo->prepare('UPDATE expenditure SET payed="1" WHERE id =:expenditureId AND roomate_id =:userId');
+    $queryPayed->bindValue('expenditureId', $expenditureId, \PDO::PARAM_INT);
+    $queryPayed->bindValue('userId', $userId, \PDO::PARAM_INT);
+    $queryPayed->execute();
+    // return $queryUser;
   }
 }
