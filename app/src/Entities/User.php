@@ -11,18 +11,15 @@ class User extends BaseEntity
     private string $username;
     private string $pwd;
     private $joindate;
-    private string $rol;
+    private string $lastname;
+    private string $firstname;
+    private string $email;
+    private $birthdate;
 
     //setters
     public function setUsername(string $username): User
     {
         $this->username = $username;
-        return $this;
-    }
-
-    public function setRol(string $rol): User
-    {
-        $this->rol = $rol;
         return $this;
     }
 
@@ -41,6 +38,30 @@ class User extends BaseEntity
     public function setJoindate(string $joindate): User
     {
         $this->joindate = $joindate;
+        return $this;
+    }
+
+    public function setEmail(string $email): User
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+    public function setLastname(string $lastname): User
+    {
+        $this->lastname = $lastname;
+        return $this;
+    }
+
+    public function setFirstname(string $firstname): User
+    {
+        $this->firstname = $firstname;
+        return $this;
+    }
+
+    public function setBirthdate(string $birthdate): User
+    {
+        $this->birthdate = $birthdate;
         return $this;
     }
 
@@ -65,13 +86,29 @@ class User extends BaseEntity
         return $this->joindate;
     }
 
-    public function getRol(): string
-    {
-        return $this->rol;
-    }
     public function getPwd(): string
     {
         return $this->pwd;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function getLastname(): string
+    {
+        return $this->lastname;
+    }
+
+    public function getFirstname(): string
+    {
+        return $this->firstname;
+    }
+
+    public function getBirthdate()
+    {
+        return $this->birthdate;
     }
 
     //midelwares

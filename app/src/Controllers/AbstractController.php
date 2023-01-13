@@ -13,9 +13,15 @@ abstract class AbstractController
         call_user_func_array([$this, $action], $params);
     }
 
-    public function renderJson(array $data)
-    {
+    public function renderJson(array $data){
+
         header('Content-Type: application/json');
-        echo json_encode($data);
+        echo json_encode(['statut' => 200,
+            'data' => $data]);
+    }
+
+    public function renderJsonError(int $codeError, string $nameError)
+    {
+
     }
 }

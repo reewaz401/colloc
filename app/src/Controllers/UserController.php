@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Factorys\PDOFactory;
+use App\Factories\PDOFactory;
 use App\Managers\UserManager;
 use App\Managers\SessionManager;
 use App\Routes\Route;
@@ -15,7 +15,6 @@ class UserController extends AbstractController
         $sessionManager = new SessionManager();
         $logStatut = $sessionManager->check_login();
 
-        $this->render("login.php", [], "Login page", $logStatut);
     }
 
     #[Route('/logout', name: "logout", methods: ["GET"])]
@@ -26,7 +25,6 @@ class UserController extends AbstractController
         $sessionManager->logout();
         header("location: /" );
 
-        //$this->render("logout.php", [], "Logout page", $logStatut);
     }
 
     #[Route('/login', name: "login", methods: ["POST"])]
@@ -80,14 +78,13 @@ class UserController extends AbstractController
         $signin = filter_input(INPUT_POST, "signin");
         $getUser = $userManager->readUser($username);
 
-        if($signin){
-            if($getUser){
-                echo "<script type='text/javascript'>alert('this pseudo already use, please choice an other.'); location.href='/login'</script>";
-            }else{
-                $userManager->creatUser($username, $pwd_hash, $firstname, $lastname, $email, $birthdate);
-                header("location: /login" );
-            }
+        
+        if($getUser){
+            echo "this pseudo already use, please choice an other.";
+        }else{
+            $userManager->creatUser($username, $pwd_hash, $firstname, $lastname, $email, $birthdate);
         }
+        
 
     }
 
