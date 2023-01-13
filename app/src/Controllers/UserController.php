@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Factorys\PDOFactory;
+use App\Factories\PDOFactory;
 use App\Managers\UserManager;
 use App\Managers\SessionManager;
 use App\Routes\Route;
@@ -15,7 +15,6 @@ class UserController extends AbstractController
         $sessionManager = new SessionManager();
         $logStatut = $sessionManager->check_login();
 
-        $this->render("login.php", [], "Login page", $logStatut);
     }
 
     #[Route('/logout', name: "logout", methods: ["GET"])]
@@ -26,42 +25,23 @@ class UserController extends AbstractController
         $sessionManager->logout();
         header("location: /" );
 
-        //$this->render("logout.php", [], "Logout page", $logStatut);
     }
 
     #[Route('/login', name: "login", methods: ["POST"])]
     public function signin()
     {
-        $firstname = filter_input(INPUT_POST, "firstname");
-        $lastname = filter_input(INPUT_POST, "lastname");
-        $email = filter_input(INPUT_POST, "email");
-        $birthdate = filter_input(INPUT_POST, "birthdate");
 
         $username = filter_input(INPUT_POST, "username");
         $pwd = filter_input(INPUT_POST, "pwd");
         $pwd_hash =  password_hash($pwd, PASSWORD_DEFAULT);
 
-        $update_username = filter_input(INPUT_POST, "username");
-        $update_pwd = filter_input(INPUT_POST, "pwd");
-        $update_pwd_hash =  password_hash($update_pwd, PASSWORD_DEFAULT);
-
-
         $userManager = new UserManager(new PDOFactory());
         $sessionManager = new SessionManager();
 
-        $signin = filter_input(INPUT_POST, "signin");
         $login = filter_input(INPUT_POST, "login");
-        $resmdp = filter_input(INPUT_POST, "resmdp");
         $getUser = $userManager->readUser($username);
 
-        if($signin){
-            if($getUser){
-                echo "<script type='text/javascript'>alert('this pseudo already use, please choice an other.'); location.href='/login'</script>";
-            }else{
-                $userManager->creatUser($username, $pwd_hash, $firstname, $lastname, $email, $birthdate);
-                header("location: /login" );
-            }
-        }
+
         if($login){
             if(isset($getUser[0])){
                 if (!password_verify($pwd, $getUser[0]->getPwd())){
@@ -78,6 +58,50 @@ class UserController extends AbstractController
             }
 
         }
+
+    }
+
+    #[Route('/signin', name: "signin", methods: ["POST"])]
+    public function signin2()
+    {
+        $firstname = filter_input(INPUT_POST, "firstname");
+        $lastname = filter_input(INPUT_POST, "lastname");
+        $email = filter_input(INPUT_POST, "email");
+        $birthdate = filter_input(INPUT_POST, "birthdate");
+
+        $username = filter_input(INPUT_POST, "username");
+        $pwd = filter_input(INPUT_POST, "pwd");
+        $pwd_hash =  password_hash($pwd, PASSWORD_DEFAULT);
+
+        $userManager = new UserManager(new PDOFactory());
+
+        $signin = filter_input(INPUT_POST, "signin");
+        $getUser = $userManager->readUser($username);
+
+        
+        if($getUser){
+            echo "this pseudo already use, please choice an other.";
+        }else{
+            $userManager->creatUser($username, $pwd_hash, $firstname, $lastname, $email, $birthdate);
+        }
+        
+
+    }
+
+    #[Route('/respwd', name: "respwd", methods: ["POST"])]
+    public function signin3()
+    {
+
+        $update_username = filter_input(INPUT_POST, "username");
+        $update_pwd = filter_input(INPUT_POST, "pwd");
+        $update_pwd_hash =  password_hash($update_pwd, PASSWORD_DEFAULT);
+
+
+        $userManager = new UserManager(new PDOFactory());
+
+        $resmdp = filter_input(INPUT_POST, "resmdp");
+
+
         if($resmdp){
             $userManager->updatePwd($update_username, $update_pwd_hash);
             header("location: /login" );

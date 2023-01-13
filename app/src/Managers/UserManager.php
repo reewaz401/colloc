@@ -2,37 +2,51 @@
 
 namespace App\Managers;
 
-use App\Entitys\User;
-use App\Factorys\PDOFactory;
+use App\Entities\User;
+use App\Factories\PDOFactory;
 use App\Interfaces\Database;
 
 class UserManager extends BaseManager
 {
-    public function creatUser( string $username, string $pwd, string $firstname, string $lastname, string $email, string $birthdate): void
+    public function creatUser( string $username, string $pwd, string $firstname, string $lastname, string $email, ?string $birthdate): void
     {
-        $query = $this->pdo->prepare("INSERT INTO roommate (username, pwd, nom, prenom, mail, date_naissance) VALUES (:username, :pwd, :lastname, firstname, email, birthdate) ");
-        $query->bindValue('firstname', $firstname, \PDO::PARAM_STR);
-        $query->bindValue('lastname', $lastname, \PDO::PARAM_STR);
-        $query->bindValue('username', $username, \PDO::PARAM_STR);
-        $query->bindValue('email', $email, \PDO::PARAM_STR);
-        $query->bindValue('pwd', $pwd, \PDO::PARAM_STR);
-        $query->bindValue('birthdate', $birthdate, \PDO::PARAM_STR);
+        try{
+            $query = $this->pdo->prepare("INSERT INTO roommate (username, pwd, lastname, firstname, email, birthdate) VALUES (:username, :pwd, :lastname, :firstname, :email, :birthdate) ");
+            $query->bindValue('firstname', $firstname, \PDO::PARAM_STR);
+            $query->bindValue('lastname', $lastname, \PDO::PARAM_STR);
+            $query->bindValue('username', $username, \PDO::PARAM_STR);
+            $query->bindValue('email', $email, \PDO::PARAM_STR);
+            $query->bindValue('pwd', $pwd, \PDO::PARAM_STR);
+            $query->bindValue('birthdate', $birthdate, \PDO::PARAM_STR);
 
-        $query->execute();      
+            $query->execute(); 
+            
+            echo "Successfully added the new user " . $username;
+
+        }catch(PDOException $e){
+            echo "DataBase Error: The user could not be added.<br>".$e->getMessage();
+        }    
     }
 
     public function readUser(string $username)
     {
-        $query = $this->pdo->prepare("SELECT * FROM roommate WHERE username = :username");
-        $query->bindValue('username', $username, \PDO::PARAM_STR);
-        $query->execute(); 
+        try{
+            $query = $this->pdo->prepare("SELECT * FROM roommate WHERE username = :username");
+            $query->bindValue('username', $username, \PDO::PARAM_STR);
+            $query->execute(); 
 
-        $users = [];
+            $users = [];
 
-        while ($data = $query->fetch(\PDO::FETCH_ASSOC)) {
-            $users[] = new User($data);
-        }
-        return $users;
+            while ($data = $query->fetch(\PDO::FETCH_ASSOC)) {
+                $users[] = new User($data);
+            }
+            return $users;
+
+            echo "Successfully read user " . $username;
+
+        }catch(PDOException $e){
+            echo "DataBase Error: The user could not be found.<br>".$e->getMessage();
+        } 
     }
 
     public function readAllUser(): array

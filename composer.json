@@ -1,0 +1,15 @@
+{
+    "name": "justin/colloc",
+    "autoload": {
+        "psr-4": {
+            "Justin\\Colloc\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Justin",
+            "email": "justin.leluc@gmail.com"
+        }
+    ],
+    "require": {}
+}
