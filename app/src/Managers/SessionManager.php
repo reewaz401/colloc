@@ -2,7 +2,7 @@
 
 namespace App\Managers;
 
-use App\Entitys\User;
+use App\Entities\User;
 
 class SessionManager extends BaseManager
 {

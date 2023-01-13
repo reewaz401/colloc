@@ -100,20 +100,21 @@ CREATE TABLE `roommate` (
   `id` int(11) NOT NULL,
   `pwd` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
-  `nom` varchar(255) NOT NULL,
-  `prenom` varchar(255) NOT NULL,
-  `mail` varchar(255) NOT NULL,
-  `rol` varchar(255) DEFAULT NULL,
-  `date_naissance` date NOT NULL
+  `lastname` varchar(255) NOT NULL,
+  `firstname` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `birthdate` date DEFAULT NULL,
+  `joindate` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `roommate`
 --
 
-INSERT INTO `roommate` (`id`, `pwd`, `username`, `nom`, `prenom`, `mail`, `rol`, `date_naissance`) VALUES
-(3, 'hhh', 'hhh', 'hhh', 'hhh', 'hhh', NULL, '2023-01-03'),
-(4, '', '', '', '', '', NULL, '2023-01-04');
+INSERT INTO `roommate` (`id`, `pwd`, `username`, `lastname`, `firstname`, `email`, `birthdate`, `create_date`) VALUES
+(5, '$2y$10$txukkGlwu/ZS2oyTUPKZNuJqE6fkPAX/p5SeLQgO.EUjPuOxCS2va', 'testuser#1', 'doe', 'joe', 'joe.doe@test.com', NULL, '2023-01-13 10:12:07');
+
+
 
 --
 -- Index pour les tables déchargées
