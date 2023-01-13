@@ -22,6 +22,10 @@ abstract class AbstractController
 
     public function renderJsonError(int $codeError, string $nameError)
     {
-
+        header('Content-Type: application/json');
+        echo json_encode([
+            'status' => $codeError,
+            'message' => $nameError.'  '
+        ]);
     }
 }

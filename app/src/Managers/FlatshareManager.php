@@ -18,11 +18,15 @@ class FlatshareManager extends BaseManager
      *  1- la première permet d'insérer des données dans la table 'Flatshare'
      *  2- la deuxième s'occupe d'insérer des données dans la table de jointure/associative ( n to n )
      */
-    public function createFlatshare($id_creator, $name, $address, $start_date, $end_date):void
+    public function createFlatshare(int $id_creator, string $name, string $address, string $start_date, string $end_date):void
     {
-        $flatshareId = $this->insertFlatshare($name, $address, $start_date, $end_date);
-        $this->insertRoomateHasFlatshare($id_creator, $flatshareId);
-        echo 'normalement c\'est réussi';
+        $this->pdo->query('START TRANSACTION');
+        $response = $this->insertFlatshare($name, $address, $start_date, $end_date);
+//        $this->insertRoomateHasFlatshare($id_creator, $flatshareId);
+        $this->pdo->query('ROLLBACK');
+        if ($response instanceof \Exception) {
+            return ;
+        }
     }
 
     /**
@@ -32,7 +36,7 @@ class FlatshareManager extends BaseManager
      * @param string $end_date
      * @return int|string
      */
-    public function insertFlatshare(string $name, string $address, string $start_date, string $end_date): int|string
+    public function insertFlatshare(string $name, string $address, string $start_date, string $end_date): int|string|\Exception
     {
         try {
             $query = $this->pdo->prepare('INSERT INTO flat_share ( name , address, start_date, end_date) VALUES (:name, :address, :start_date, :end_date)');
@@ -42,8 +46,8 @@ class FlatshareManager extends BaseManager
             $query->bindValue('end_date', $end_date);
 
             $query->execute();
-        } catch (PDOException $e) {
-            echo($e->getMessage());
+        } catch (\Exception $e) {
+            return $e;
         }
         return $this->pdo->lastInsertId();
     }
@@ -105,8 +109,8 @@ class FlatshareManager extends BaseManager
             $query->bindValue('role', 1, \PDO::PARAM_INT);
 
             $query->execute();
-        } catch (PDOException $e) {
-            echo('ROOM_HAS_FLATSHARE  '.$e->getMessage());
+        } catch (\Exception $e) {
+            return $e;
         }
     }
 }
