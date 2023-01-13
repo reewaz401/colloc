@@ -21,11 +21,9 @@ class UserManager extends BaseManager
 
             $query->execute(); 
             
-            echo "Successfully added the new user " . $username;
-
         }catch(PDOException $e){
-            echo "DataBase Error: The user could not be added.<br>".$e->getMessage();
-        }    
+            $e;
+        }
     }
 
     public function readUser(string $username)
@@ -42,10 +40,26 @@ class UserManager extends BaseManager
             }
             return $users;
 
-            echo "Successfully read user " . $username;
 
         }catch(PDOException $e){
-            echo "DataBase Error: The user could not be found.<br>".$e->getMessage();
+            $e;
+        } 
+    }
+
+    public function readUserReturn(string $username)
+    {
+        try{
+            $query = $this->pdo->prepare("SELECT * FROM roommate WHERE username = :username");
+            $query->bindValue('username', $username, \PDO::PARAM_STR);
+            $query->execute(); 
+
+            $data = $query->fetch(\PDO::FETCH_ASSOC);
+
+            return $data;
+
+
+        }catch(PDOException $e){
+            $e;
         } 
     }
 

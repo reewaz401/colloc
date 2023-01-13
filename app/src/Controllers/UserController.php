@@ -21,7 +21,6 @@ class UserController extends AbstractController
     public function logout()
     {
         $sessionManager = new SessionManager();
-        //$logStatut = $sessionManager->check_login();
         $sessionManager->logout();
         header("location: /" );
 
@@ -41,24 +40,20 @@ class UserController extends AbstractController
         $login = filter_input(INPUT_POST, "login");
         $getUser = $userManager->readUser($username);
 
-
-        if($login){
-            if(isset($getUser[0])){
-                if (!password_verify($pwd, $getUser[0]->getPwd())){
-                    echo "<script type='text/javascript'>alert('Password an username don't match.'); </script>";
-                }
-                elseif(password_verify($pwd, $getUser[0]->getPwd())){
-                    $sessionManager->login($username);
-                    header("location: /" );
-                }
-            }else{
-                header("location: /login" );
-                echo "<script type='text/javascript'>alert('Password an username don't match.'); </script>";
-
+        if(isset($getUser[0])){
+            if (!password_verify($pwd, $getUser[0]->getPwd())){
+                $this->renderJsonError(403, "Identifiants incorrects");
             }
+            elseif(password_verify($pwd, $getUser[0]->getPwd())){
+                $sessionManager->login($username);
+                $getUserInfo = $userManager->readUserReturn($username);
+
+                $this->renderJson([$getUserInfo]);
+            }  
+        }else{
+            $this->renderJsonError(403, "Identifiants incorrects");
 
         }
-
     }
 
     #[Route('/signin', name: "signin", methods: ["POST"])]
@@ -79,10 +74,13 @@ class UserController extends AbstractController
         $getUser = $userManager->readUser($username);
 
         
-        if($getUser){
-            echo "this pseudo already use, please choice an other.";
+        if(isset($getUser[0])){
+            $this->renderJsonError(403, "Ce pseudo est déja utilisé, veuillez en choisir un autre.");
         }else{
             $userManager->creatUser($username, $pwd_hash, $firstname, $lastname, $email, $birthdate);
+            $getUserInfo = $userManager->readUser($username);
+            $this->renderJson([$getUserInfo]);
+
         }
         
 
