@@ -12,13 +12,10 @@ export async function handlePostReq(api, body, headers) {
     .post(`${api_baseUrl}${api}`, body, )
     .then(async(response) => {
       backResponse = response;
-      console.log(response.data);
       }).catch((err) =>{
         backResponse = {
-          data: {
             status: 504,
             message: "Something is wrong internally",
-          },
         };
       });
   return backResponse;

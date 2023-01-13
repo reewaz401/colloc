@@ -16,7 +16,7 @@ birthdate : ""
   };
   const handleSubmit = (event) => {
     postsignUp(userInfo);
-    navigate('/colloc_view')
+    navigate('/home')
     // prevents the submit button from refreshing the page
     event.preventDefault();
     

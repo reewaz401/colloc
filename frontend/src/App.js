@@ -9,7 +9,7 @@ import AddColloc from './pages/add_colloc'
 import IconButton from '@mui/material/IconButton';
 // import CollocTable from './pages/budget_division'
 import InviteColloc from './pages/invite_collocation'
-import CollocView from './pages/colloc_view'
+import Home from './pages/home'
 import RePwd from './pages/rePwd';
 
 function App() {
@@ -49,12 +49,12 @@ function App() {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to={'/colloc_view'}>
+                  <Link className="nav-link" to={'/home'}>
                     Colloc View
                   </Link>
                 </li>
                 {
-                  pathurl === "/colloc_view"?
+                  pathurl === "/home"?
                   <IconButton color="red" aria-label="add to shopping cart" onClick={(e) => {
                   
                     
@@ -84,7 +84,7 @@ function App() {
               <Route path="/sign-up" element={<SignUp />} />
               <Route path="/create_colloc" element={<AddColloc />} />
               <Route path="/invite_collocation" element={<InviteColloc />} />
-              <Route path="/colloc_view" element={<CollocView />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/repwd" element={<RePwd />} />
             </Routes>
       </div>

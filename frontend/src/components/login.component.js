@@ -12,8 +12,11 @@ export default function Login() {
     setUesrInfo({ ...userInfo, [event.target.name]: event.target.value });
   };
   const handleSubmit = (event) => {
-    postsignIn(userInfo);
-    navigate("/colloc_view");
+    postsignIn(userInfo).then((res) => {
+      navigate("/home");
+    }).catch((err) => {
+      setShowSanck(true);
+    });
     // prevents the submit button from refreshing the page
     event.preventDefault();
     

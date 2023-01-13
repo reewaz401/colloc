@@ -46,7 +46,7 @@ export default function InviteColloc() {
     ]);
     const handleCreate = () => {
         createColloc();
-        navigate("/colloc_view");
+        navigate("/home");
     }
   return (
       <div style={{ height: 400, width: '100%', background: "white", marginTop: "100px" }}>
