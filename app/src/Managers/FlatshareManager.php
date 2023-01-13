@@ -2,6 +2,7 @@
 
 namespace App\Managers;
 
+use App\Entities\FlatShare;
 use PDOException;
 
 class FlatshareManager extends BaseManager
@@ -20,13 +21,20 @@ class FlatshareManager extends BaseManager
      */
     public function createFlatshare(int $id_creator, string $name, string $address, string $start_date, string $end_date):void
     {
-        $this->pdo->query('START TRANSACTION');
-        $response = $this->insertFlatshare($name, $address, $start_date, $end_date);
-//        $this->insertRoomateHasFlatshare($id_creator, $flatshareId);
-        $this->pdo->query('ROLLBACK');
-        if ($response instanceof \Exception) {
-            return ;
+        try {
+            $this->pdo->query('START TRANSACTION');
+            $response = $this->insertFlatshare($name, $address, $start_date, $end_date);
+            $this->insertRoomateHasFlatshare($id_creator, $response);
+
+            if ($response instanceof \Exception) {
+                $this->pdo->query('ROLLBACK');
+            }else{
+                $this->pdo->query('COMMIT');
+            }
+        } catch (\Exception $e) {
+
         }
+
     }
 
     /**
@@ -58,7 +66,7 @@ class FlatshareManager extends BaseManager
 
         $data = $query->fetch(\PDO::FETCH_ASSOC);
 
-        return new ($data);
+        return new FlatShare($data);
     }
 
     public function selectAllColloc() : array
@@ -67,11 +75,9 @@ class FlatshareManager extends BaseManager
 
         $arrayColloc = [];
 
-        while ($data = $query->fetch(\PDO::FETCH_ASSOC)) {
-            $arrayColloc[] = new ($data);
-        }
-
-        return $arrayColloc;
+        $data = $query->fetchAll(\PDO::FETCH_ASSOC);
+        // $arrayColloc[] = new FlatShare($data);
+        return $data;
     }
 
     public function deleteFlatshare(int $id)

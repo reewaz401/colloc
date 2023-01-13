@@ -46,4 +46,14 @@ class FlatshareController extends AbstractController
         $flatshareManager = new FlatshareManager(new PDOFactory());
         $flatshareManager->updateFlatshare($id_flatshare, $name, $address, $start_date, $end_date);
     }
+
+
+    #[Route('/selectAll', name: "update", methods: ["GET"])]
+
+    public function select()
+    {
+        $flatshareManager = new FlatshareManager(new PDOFactory());
+        $data = $flatshareManager->selectAllColloc();
+        $this->renderJson($data);
+    }
 }

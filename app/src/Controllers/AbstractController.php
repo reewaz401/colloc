@@ -13,7 +13,7 @@ abstract class AbstractController
         call_user_func_array([$this, $action], $params);
     }
 
-    public function renderJson(array $data){
+    public function renderJson(array|string $data){
 
         header('Content-Type: application/json');
         echo json_encode(['statut' => 200,
@@ -25,7 +25,7 @@ abstract class AbstractController
         header('Content-Type: application/json');
         echo json_encode([
             'status' => $codeError,
-            'message' => $nameError.'  '
+            'message' => $nameError.''
         ]);
     }
 }
