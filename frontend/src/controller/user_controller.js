@@ -1,12 +1,10 @@
-import { handlePostReq } from "../utils/req";
-
+import { handlePostFormReq, handlePostReq } from "../utils/req";
+import axios from "axios";
+import { api_baseUrl } from "../utils/urls";
 export async function postsignIn(body) { 
-    new Promise((resolve, reject) => {
-        handlePostReq("/login", body).then((res) => {
-            if (res.status === 200) resolve(res);
-            else reject(res);
-        });
-   })
+    console.log("BODY", body);
+    handlePostFormReq("/login", body);
+ 
 
 }
 export async function postsignUp(body) { 

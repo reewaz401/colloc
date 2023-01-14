@@ -12,9 +12,11 @@ class UserController extends AbstractController
     #[Route('/login', name: "login", methods: ["GET"])]
     public function login()
     {
+
         $sessionManager = new SessionManager();
         $logStatut = $sessionManager->check_login();
 
+        
     }
 
     #[Route('/logout', name: "logout", methods: ["GET"])]
@@ -39,7 +41,7 @@ class UserController extends AbstractController
 
         $login = filter_input(INPUT_POST, "login");
         $getUser = $userManager->readUser($username);
-
+        
         if(isset($getUser[0])){
             if (!password_verify($pwd, $getUser[0]->getPwd())){
                 $this->renderJsonError(403, "Identifiants incorrects");

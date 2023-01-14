@@ -1,6 +1,8 @@
 import React, { Component, useState } from 'react'
 import { postsignIn, postSignOut, postsignUp } from '../controller/user_controller';
+import { Snackbar } from '@mui/material';
 import  { useNavigate } from 'react-router-dom'
+import { handlePostFormReq } from '../utils/req';
 export default function Login() {
   const [userInfo, setUesrInfo] = useState({
 firstname: "",
@@ -8,20 +10,44 @@ lastname: "",
 username: "",
 email: "",
 pwd: "",
-birthdate : ""
   });
+  const [showSnack, setShowSanck] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
   const navigate = useNavigate();
   const handleChange = (event) => {
     setUesrInfo({ ...userInfo, [event.target.name]: event.target.value });
   };
-  const handleSubmit = (event) => {
-    postsignUp(userInfo);
-    navigate('/home')
-    // prevents the submit button from refreshing the page
+  const handleClose = (event,reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setShowSanck(false);
+  };
+  const handleSubmit = async(event) => {
     event.preventDefault();
+    try {
+      let response = await handlePostFormReq("/signin", userInfo);
+      if (response.statut !== 200) {
+        console.log(response);
+        setShowSanck(true);
+        setErrMessage(response.message);
+      } else {
+        navigate("/home");
+      }
+    } catch (err) {
+      setShowSanck(true);
+      setErrMessage("Something is wrong");
+    }    
     
   };
   return (
+    <>
+         <Snackbar
+      message={errMessage}
+      autoHideDuration={4000}
+      open={showSnack}
+      onClose={handleClose}
+    ></Snackbar>
     <div className="auth-wrapper">
     <div className='auth-inner'>
       <form onSubmit={handleSubmit}>
@@ -106,7 +132,8 @@ birthdate : ""
         </div>
         </form>
         </div>
-        </div>
+      </div>
+      </>
     )
 }
 

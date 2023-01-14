@@ -2,15 +2,16 @@ import axios from "axios";
 import { api_baseUrl } from "./urls";
 export async function handlePostReq(api, body, headers) {
   let backResponse;
-  // let _token = localStorage.getItem("_token");
-  // let config = {
-  //   headers: {
-  //     Permission: "2021D@T@f@RSt*6&%2-D@T@",
-  //   },
-  // };
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+
+    },
+  };
   await axios
-    .post(`${api_baseUrl}${api}`, body, )
-    .then(async(response) => {
+    .post(`${api_baseUrl}${api}`, body,config )
+    .then(async (response) => {
+      console.log("DATA", response);
       backResponse = response;
       }).catch((err) =>{
         backResponse = {
@@ -22,12 +23,6 @@ export async function handlePostReq(api, body, headers) {
 }
 export async function handlePostFormReq(api, body, headers) {
   let backResponse;
-  // let _token = localStorage.getItem("_token");
-  // let config = {
-  //   headers: {
-  //     Permission: "2021D@T@f@RSt*6&%2-D@T@",
-  //   },
-  // };
   var bodyFormData = new FormData();
   let keys = Object.keys(body);
   keys.forEach((key) => {
@@ -36,7 +31,7 @@ export async function handlePostFormReq(api, body, headers) {
   await axios
     .post(`${api_baseUrl}${api}`, bodyFormData)
     .then(async(response) => {
-      backResponse = response;
+      backResponse = response.data;
       console.log(response.data);
       }).catch((err) =>{
         backResponse = {

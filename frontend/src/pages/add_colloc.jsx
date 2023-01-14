@@ -3,18 +3,25 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { createColloc } from '../controller/colloc_controller';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { TextField } from '@mui/material';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import AddIcon from '@mui/icons-material/Add';
+import { Snackbar } from '@mui/material';
 import  { useNavigate } from 'react-router-dom'
 import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Formik, Field, Form, ErrorMessage, FieldArray } from 'formik';
+import { handlePostFormReq } from '../utils/req';
 export default function AddColloc() {
   const [expense, setExpense] = useState([]);
   const [numExpense, setNumExpense] = useState([1]);
+  const [showSnack, setShowSanck] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
   const navigate = useNavigate();
+  const handleClose = (event,reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setShowSanck(false);
+  };
  const initialValues = {
   friends: [
     {
@@ -44,14 +51,51 @@ export default function AddColloc() {
   const handleChange = (event, index) => {
     setCollocInfo({ ...collocInfo, [event.target.name]: event.target.value });
   };
-  const handleSubmit = (event) => {
-    console.log(initialValues);
-      navigate("/invite_collocation");
+  const handleSubmit = async () => {
+  //  event.preventDefault();
+    try {
+      console.log("Submit");
+      let response = await handlePostFormReq("/create_flatshare", collocInfo);
+      if (response.statut !== 200) {
+        console.log(response);
+        setShowSanck(true);
+        setErrMessage(response.message);
+      } else {
+        navigate("/invite_collocation");
+      }
+    } catch (err) {
+      setShowSanck(true);
+      setErrMessage("Something is wrong");
+    }  
+      
     // prevents the submit button from refreshing the page
-    event.preventDefault();
+    //event.preventDefault();
     
   };
+  const handleExpenseSubmit = async (val) => {
+    // event.preventDefault();
+    try {
+      let response = await handlePostFormReq("/create_expenditure", val);
+      if (response.statut !== 200) {
+        console.log(response);
+        setShowSanck(true);
+        setErrMessage(response.message);
+      } else {
+        navigate("/invite_collocation");
+      }
+    } catch (err) {
+      setShowSanck(true);
+      setErrMessage("Something is wrong");
+    }  
+  }
   return (
+    <>
+        <Snackbar
+      message={errMessage}
+      autoHideDuration={4000}
+      open={showSnack}
+      onClose={handleClose}
+    ></Snackbar>
     <div className="auth-wrapper">
     <div className='auth-inner'>
 
@@ -59,10 +103,10 @@ export default function AddColloc() {
         
             <Formik
       initialValues={initialValues}
-      onSubmit={async (values) => {
-        await new Promise((r) => setTimeout(r, 500));
-        setCollocInfo({...collocInfo, "expenses" : values["friends"]})
-        alert(JSON.stringify(collocInfo, null, 2));
+            onSubmit={async (values) => {
+              await handleSubmit();
+             // await handleExpenseSubmit(values["friends"]);
+        
       }}
     >
       {({ values }) => (
@@ -187,6 +231,7 @@ export default function AddColloc() {
         </div>
 
         </div>
-        </div>
+      </div>
+      </>
     )
 }
