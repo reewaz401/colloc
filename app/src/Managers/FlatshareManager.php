@@ -59,6 +59,10 @@ class FlatshareManager extends BaseManager
         return $this->pdo->lastInsertId();
     }
 
+    /**
+     * @param int $id
+     * @return FlatShare
+     */
     public function selectOneFlatshare(int $id) : FlatShare
     {
         $query = $this->pdo->prepare('SELECT * FROM flat_share WHERE id = :id');
@@ -69,6 +73,10 @@ class FlatshareManager extends BaseManager
         return new FlatShare($data);
     }
 
+    /**
+     * @param int $id
+     * @return array|\Exception
+     */
     public function selectOneFlatshareToReturn(int $id) : array|\Exception
     {
         try {
@@ -82,24 +90,42 @@ class FlatshareManager extends BaseManager
         }
     }
 
+    /**
+     * @return array
+     */
     public function selectAllFlatshare() : array
     {
         $query = $this->pdo->query('SELECT * FROM flat_share WHERE 1');
 
-        $arrayColloc = [];
-
         $data = $query->fetchAll(\PDO::FETCH_ASSOC);
-        // $arrayColloc[] = new FlatShare($data);
+        // $data[] = new FlatShare($data);
         return $data;
     }
 
-    public function deleteFlatshare(int $id)
+    /**
+     * @param int $id
+     * @return ?\Exception
+     */
+    public function deleteFlatshare(int $id): ?\Exception
     {
-        $query = $this->pdo->prepare('DELETE FROM flat_share WHERE id=:id');
-        $query->bindValue('id', $id, \PDO::PARAM_INT);
-        $query->execute();
+        try {
+            $query = $this->pdo->prepare('DELETE FROM flat_share WHERE id=:id');
+            $query->bindValue('id', $id, \PDO::PARAM_INT);
+            $query->execute();
+        } catch (\Exception $e) {
+            return $e;
+        }
+        return null;
     }
 
+    /**
+     * @param int $id
+     * @param string $name
+     * @param string $address
+     * @param $start_date
+     * @param $end_date
+     * @return int|\Exception
+     */
     public function updateFlatshare(int $id, string $name, string $address, $start_date, $end_date):int
     {
         $query = $this->pdo->prepare('UPDATE flat_share SET name=:name, address=:address, start_date=:strat_date, end_date=:end_date WHERE id = :id');

@@ -16,8 +16,13 @@ abstract class AbstractController
     public function renderJson(array|string $data="", int $code=200){
 
         header('Content-Type: application/json');
-        echo json_encode(['statut' => $code,
-            'data' => $data]);
+        if(is_array($data)){
+            echo json_encode(['status' => $code,
+                'data' => $data]);
+        } else {
+            echo json_encode(['status' => $code,
+                'data' => [$data]]);
+        }
     }
 
 //    public function renderJsonError(string $message, int $codeError = 503)

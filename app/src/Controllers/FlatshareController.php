@@ -34,6 +34,7 @@ class FlatshareController extends AbstractController
             die;
         }
 
+        // all success //
         $this->renderJson($lastInsertFlatshare);
     }
 
@@ -44,7 +45,13 @@ class FlatshareController extends AbstractController
 
         $flatshareManager = new FlatshareManager(new PDOFactory());
 
-        $flatshareManager->deleteFlatshare($id_flatshare);
+        $result = $flatshareManager->deleteFlatshare($id_flatshare);
+
+        if ($result instanceof \Exception){
+            $this->renderJson("Impossible d'effectuer la suppresion, veuillez réessayer !", 501);
+        }
+
+        $this->renderJson('Suppression réussie !');
     }
 
     #[Route('/update_flatshare', name: "update", methods: ["POST"])]
@@ -57,6 +64,7 @@ class FlatshareController extends AbstractController
         $end_date = $_REQUEST['end_date'];
 
         $flatshareManager = new FlatshareManager(new PDOFactory());
+
         $flatshareManager->updateFlatshare($id_flatshare, $name, $address, $start_date, $end_date);
     }
 
