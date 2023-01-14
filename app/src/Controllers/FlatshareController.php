@@ -20,8 +20,22 @@ class FlatshareController extends AbstractController
 
         $flatshareManager = new FlatshareManager(new PDOFactory());
 
-        $flatshareManager->createFlatshare($id_creator, $name, $address, $start_date, $end_date);
+        $result = $flatshareManager->createFlatshare($id_creator, $name, $address, $start_date, $end_date);
 
+        if($result instanceof \Exception) {
+            $this->renderJson('Un problème est survenu lors de la création, veuillez réessayer !', 401);
+            die;
+        }
+
+        $lastInsertFlatshare = $flatshareManager->selectOneFlatshareToReturn($result);
+
+        if ($lastInsertFlatshare instanceof \Exception){
+            $this->renderJson('Création réussie, mais il est impossible de récuperer les données !', 555);
+            die;
+        }
+
+        // all success //
+        $this->renderJson($lastInsertFlatshare);
     }
 
     #[Route('/delete_flatshare', name: "delete", methods: ["POST"])]
@@ -31,7 +45,13 @@ class FlatshareController extends AbstractController
 
         $flatshareManager = new FlatshareManager(new PDOFactory());
 
-        $flatshareManager->deleteFlatshare($id_flatshare);
+        $result = $flatshareManager->deleteFlatshare($id_flatshare);
+
+        if ($result instanceof \Exception){
+            $this->renderJson("Impossible d'effectuer la suppresion, veuillez réessayer !", 501);
+        }
+
+        $this->renderJson('Suppression réussie !');
     }
 
     #[Route('/update_flatshare', name: "update", methods: ["POST"])]
@@ -44,6 +64,26 @@ class FlatshareController extends AbstractController
         $end_date = $_REQUEST['end_date'];
 
         $flatshareManager = new FlatshareManager(new PDOFactory());
+
         $flatshareManager->updateFlatshare($id_flatshare, $name, $address, $start_date, $end_date);
+    }
+
+
+    #[Route('/selectAll', name: "update", methods: ["GET"])]
+    public function select()
+    {
+        $flatshareManager = new FlatshareManager(new PDOFactory());
+        $data = $flatshareManager->selectAllFlatshare();
+        $this->renderJson($data);
+    }
+
+    #[Route('/add_roommate', name: "update", methods: ["GET"])]
+    public function addRoommate()
+    {
+        $id_new_roommate = $_REQUEST['new_roomate'];
+        $id_flatshare = $_REQUEST['id_flatshare'];
+        $role = $_REQUEST['role'] ?? 0;
+
+
     }
 }
