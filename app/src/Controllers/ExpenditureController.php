@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controllers;
-
+use App\Traits\Notif;
 use App\Factories\PDOFactory;
 use App\Managers\ExpenditureManager;
 use App\Routes\Route;
@@ -40,7 +40,6 @@ class ExpenditureController extends AbstractController
     $userId = $_REQUEST['user_id'];
     $expenditureId = $_REQUEST['expenditureId'];
     $expenditureManageGet = new ExpenditureManager(new PDOFactory());
-
     $data = $expenditureManageGet->UserExpenditure($userId, $expenditureId);
     $this->renderJson($data);
   }
@@ -52,5 +51,25 @@ class ExpenditureController extends AbstractController
     $expenditureManagerDelete = new ExpenditureManager(new PDOFactory());
 
     $expenditureManagerDelete->deleteExpenditure($expenditureId);
+  }
+  #[Route('/createMonthFee', name: "create-month", methods: ["POST", "GET"])]
+  public function createMonthFee()
+  {
+    $fee_name= $_REQUEST['name'];
+    $flat_share_id = $_REQUEST['flat_share_id'];
+    $feeAmount = $_REQUEST['amount'];
+    $date = $_REQUEST['date'];
+    $expenditureManagerCreate = new ExpenditureManager(new PDOFactory());
+
+    $expenditureManagerCreate->createMonthFee($fee_name,$flat_share_id,$feeAmount,$date);
+  }
+  #[Route('/delteMonthFee', name: "create-month", methods: ["POST", "GET"])]
+  public function deleteMonthFee()
+  {
+    $monthFeedId= $_REQUEST['id'];
+
+    $expenditureManagerDelete = new ExpenditureManager(new PDOFactory());
+
+    $expenditureManagerDelete->deleteMonthFee($monthFeedId);
   }
 }
