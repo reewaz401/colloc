@@ -21,7 +21,7 @@ class FlatshareController extends AbstractController
 
         $userManager = new UserManager(new PDOFactory());
 
-        $result = $userManager->readUser($id_creator);
+        $result = $userManager->readUserById($id_creator);
 
         if($result instanceof \Exception) {
             $this->renderJson('Un problème est survenu lors de la création, problème avec le compte créant la collocation, veuillez réessayer !', 401);
@@ -104,18 +104,28 @@ class FlatshareController extends AbstractController
         $this->renderJson("La collocation $nameFlatshare a été modifiée avec succès !");
     }
 
-    #[Route('/selectInfos', name: "selectinfos", methods: ["GET"])]
+    #[Route('/select_infos', name: "selectinfos", methods: ["GET", "POST"])]
     public function selectInfos()
     {
+        $id_flatshare = $_REQUEST['id_flatshare'];
+
         $flatshareManager = new FlatshareManager(new PDOFactory());
 
-        $data = $flatshareManager->selectAllFlatshare();
+        $result = $flatshareManager->selectOneFlatshare($id_flatshare);
 
-        if ($data instanceof \Exception) {
-            $this->renderJson("Impossible d'effectuer la sélection, veuillez réessayer !", 501);
+        if ($result instanceof \Exception) {
+            $this->renderJson("Impossible de récupérer les infos liées à la collocation, vérifier que la collocation est toujour existante !", 501);
             die;
         }
 
+        $nameFlatshare = $result->getName();
+
+        $data = $flatshareManager->selectInfos($id_flatshare);
+
+        if ($data instanceof \Exception) {
+            $this->renderJson("Impossible de récupérer les infos liées à la collocation $nameFlatshare, veuillez réessayer !", 501);
+            die;
+        }
         $this->renderJson($data);
     }
 
@@ -214,5 +224,32 @@ class FlatshareController extends AbstractController
 
         // all success //
         $this->renderJson("Le collocataire $roommateName a été supprimé avec succès de la collocation $flatshareName !");
+    }
+
+    #[Route('/select_all_roommate', name: "kickRoommate", methods: ["POST", "GET"])]
+    public function selectAllRoommate()
+    {
+        $id_flatshare = $_REQUEST['id_flatshare'];
+
+        $flatshareManager = new FlatshareManager(new PDOFactory());
+
+        $result = $flatshareManager->selectOneFlatshare($id_flatshare);
+
+        if ($result instanceof \Exception) {
+            $this->renderJson("Nous n'arrivons pas à effectuer la récuperation, vérifiez que la collocation est toujours existante !", 401);
+            die;
+        }
+
+        $flatshareName = $result->getName();
+
+        $data = $flatshareManager->selectAllRoommate($id_flatshare);
+
+        if ($result instanceof \Exception) {
+            $this->renderJson("Une erreur est survenue lors de la récupération des collocataires de $flatshareName !", 401);
+            die;
+        }
+
+        // all success //
+        $this->renderJson($data);
     }
 }

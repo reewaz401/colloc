@@ -42,6 +42,22 @@ class UserManager extends BaseManager
         } 
     }
 
+    public function readUserById(int $id):User|\Exception
+    {
+        try{
+            $query = $this->pdo->prepare("SELECT * FROM roommate WHERE id = :id");
+            $query->bindValue('id', $id, \PDO::PARAM_STR);
+            $query->execute();
+
+            $data = $query->fetch(\PDO::FETCH_ASSOC);
+
+            return (is_array($data)) ? new User($data) : throw new \Exception();
+
+        }catch(\Exception $e){
+            return $e;
+        }
+    }
+
     public function readUserReturn(string $username)
     {
         try{
@@ -52,8 +68,6 @@ class UserManager extends BaseManager
             $data = $query->fetch(\PDO::FETCH_ASSOC);
 
             return $data;
-
-
         }catch(PDOException $e){
             $e;
         } 
