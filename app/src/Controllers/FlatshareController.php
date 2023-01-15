@@ -30,7 +30,7 @@ class FlatshareController extends AbstractController
         $lastInsertFlatshare = $flatshareManager->selectOneFlatshareToReturn($result);
 
         if ($lastInsertFlatshare instanceof \Exception){
-            $this->renderJson('Création réussie, mais il est impossible de récuperer les données !', 555);
+            $this->renderJson('Créé avec succès, mais il est impossible de récuperer les données !', 555);
             die;
         }
 
@@ -45,13 +45,23 @@ class FlatshareController extends AbstractController
 
         $flatshareManager = new FlatshareManager(new PDOFactory());
 
+        $result = $flatshareManager->selectOneFlatshare($id_flatshare);
+
+        if ($result instanceof \Exception){
+            $this->renderJson("Nous n'arrivons pas à effectuer la suppresion, vérifiez que la collocation existe toujours !", 501);
+            die;
+        }
+
+        $nameFlatshare = $result->getName();
+
         $result = $flatshareManager->deleteFlatshare($id_flatshare);
 
         if ($result instanceof \Exception){
             $this->renderJson("Impossible d'effectuer la suppresion, veuillez réessayer !", 501);
+            die;
         }
 
-        $this->renderJson('Suppression réussie !');
+        $this->renderJson("La collocation $nameFlatshare a été supprimée avec succès !");
     }
 
     #[Route('/update_flatshare', name: "update", methods: ["POST"])]
@@ -65,25 +75,84 @@ class FlatshareController extends AbstractController
 
         $flatshareManager = new FlatshareManager(new PDOFactory());
 
-        $flatshareManager->updateFlatshare($id_flatshare, $name, $address, $start_date, $end_date);
+        $result = $flatshareManager->selectOneFlatshare($id_flatshare);
+
+        if ($result instanceof \Exception){
+            $this->renderJson("Nous n'arrivons pas à effectuer la modification, vérifiez que la collocation est toujours existante !", 501);
+            die;
+        }
+
+        $nameFlatshare = $result->getName();
+
+        $result = $flatshareManager->updateFlatshare($id_flatshare, $name, $address, $start_date, $end_date);
+
+        if ($result instanceof \Exception){
+            $this->renderJson("Impossible d'effectuer la modification, veuillez réessayer !", 501);
+            die;
+        }
+
+        $this->renderJson("La collocation $nameFlatshare a été modifiée avec succès !");
     }
 
 
-    #[Route('/selectAll', name: "update", methods: ["GET"])]
+    #[Route('/selectAll', name: "selectall", methods: ["GET"])]
     public function select()
     {
         $flatshareManager = new FlatshareManager(new PDOFactory());
+
         $data = $flatshareManager->selectAllFlatshare();
+
+        if ($data instanceof \Exception) {
+            $this->renderJson("Impossible d'effectuer la sélection, veuillez réessayer !", 501);
+            die;
+        }
+
         $this->renderJson($data);
     }
 
-    #[Route('/add_roommate', name: "update", methods: ["GET"])]
+    #[Route('/add_roommate', name: "addRoommate", methods: ["POST", "GET"])]
     public function addRoommate()
     {
         $id_new_roommate = $_REQUEST['new_roomate'];
         $id_flatshare = $_REQUEST['id_flatshare'];
         $role = $_REQUEST['role'] ?? 0;
 
+        $flatshareManager = new FlatshareManager(new PDOFactory());
 
+        $result = $flatshareManager->insertRoomateHasFlatshare($id_flatshare, $id_new_roommate, $role);
+
+        if($result instanceof \Exception) {
+            $this->renderJson("Un problème est survenu lors de l'ajout du nouveau collocataire, veuillez réessayer !", 401);
+            die;
+        }
+
+        // all success //
+        $this->renderJson($result);
+    }
+
+    #[Route('/kick_roommate', name: "kickRoommate", methods: ["POST", "GET"])]
+    public function deleteRoomateFromFlatshare()
+    {
+        $id_flatshare = $_REQUEST['id_flatshare'];
+        $id_roommate = $_REQUEST['id_roomate'];
+
+        $flatshareManager = new FlatshareManager(new PDOFactory());
+
+        $result = $flatshareManager->selectOneFlatshare($id_flatshare);
+
+        if ($result instanceof \Exception) {
+            $this->renderJson("Nous n'arrivons pas à effectuer la suppression vérifiez que la collocation est toujours existante !", 401);
+            die;
+        }
+
+        $result = $flatshareManager->deleteFlatshare($id_flatshare);
+
+        if ($result instanceof \Exception) {
+            $this->renderJson("Un problème est survenu lors de la suppression, veuillez réessayer !", 401);
+            die;
+        }
+
+        // all success //
+        $this->renderJson("Supprimé avec succès !");
     }
 }

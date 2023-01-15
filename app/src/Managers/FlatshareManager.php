@@ -13,13 +13,13 @@ class FlatshareManager extends BaseManager
      * @param $address
      * @param $start_date
      * @param $end_date
-     * @return void|\Exception
+     * @return int|\Exception
      *
      * @comment Cette fonction appel 2 fonctions
      *  1- la première permet d'insérer des données dans la table 'Flatshare'
      *  2- la deuxième s'occupe d'insérer des données dans la table de jointure/associative ( n to n )
      */
-    public function createFlatshare(int $id_creator, string $name, string $address, string $start_date, string $end_date)
+    public function createFlatshare(int $id_creator, string $name, string $address, string $start_date, string $end_date):int|\Exception
     {
         $this->pdo->query('START TRANSACTION');
 
@@ -33,7 +33,6 @@ class FlatshareManager extends BaseManager
             $this->pdo->query('COMMIT');
             return $res_flatshare;
         }
-
     }
 
     /**
@@ -61,16 +60,21 @@ class FlatshareManager extends BaseManager
 
     /**
      * @param int $id
-     * @return FlatShare
+     * @return FlatShare|\Exception
      */
-    public function selectOneFlatshare(int $id) : FlatShare
+    public function selectOneFlatshare(int $id) : FlatShare|\Exception
     {
-        $query = $this->pdo->prepare('SELECT * FROM flat_share WHERE id = :id');
-        $query->bindValue('id', $id, \PDO::PARAM_INT);
-        $query->execute();
-        $data = $query->fetch(\PDO::FETCH_ASSOC);
+        try {
+            $query = $this->pdo->prepare('SELECT * FROM flat_share WHERE id = :id');
+            $query->bindValue('id', $id, \PDO::PARAM_INT);
+            $query->execute();
 
-        return new FlatShare($data);
+            $data = $query->fetch(\PDO::FETCH_ASSOC);
+
+            return new FlatShare($data);
+        } catch (\Exception $e) {
+            return $e;
+        }
     }
 
     /**
@@ -84,7 +88,7 @@ class FlatshareManager extends BaseManager
             $query->bindValue('id', $id, \PDO::PARAM_INT);
             $query->execute();
             $data = $query->fetch(\PDO::FETCH_ASSOC);
-            return [$data];
+            return $data;
         }catch (\Exception $e) {
             return $e;
         }
@@ -93,13 +97,17 @@ class FlatshareManager extends BaseManager
     /**
      * @return array
      */
-    public function selectAllFlatshare() : array
+    public function selectAllFlatshare() : array|\Exception
     {
-        $query = $this->pdo->query('SELECT * FROM flat_share WHERE 1');
+        try {
+            $query = $this->pdo->query('SELECT * FROM flat_share WHERE 1');
 
-        $data = $query->fetchAll(\PDO::FETCH_ASSOC);
-        // $data[] = new FlatShare($data);
-        return $data;
+            $data = $query->fetchAll(\PDO::FETCH_ASSOC);
+            // $data[] = new FlatShare($data);
+            return $data;
+        } catch (\Exception $e) {
+            return $e;
+        }
     }
 
     /**
@@ -126,33 +134,37 @@ class FlatshareManager extends BaseManager
      * @param $end_date
      * @return int|\Exception
      */
-    public function updateFlatshare(int $id, string $name, string $address, $start_date, $end_date):int
+    public function updateFlatshare(int $id, string $name, string $address, $start_date, $end_date):int|\Exception
     {
-        $query = $this->pdo->prepare('UPDATE flat_share SET name=:name, address=:address, start_date=:strat_date, end_date=:end_date WHERE id = :id');
-        $query->bindValue('id', $id, \PDO::PARAM_INT);
-        $query->bindValue('name', $name, \PDO::PARAM_STR);
-        $query->bindValue('address', $address, \PDO::PARAM_STR);
-        $query->bindValue('start_date', $start_date);
-        $query->bindValue('end_date', $end_date);
+        try {
+            $query = $this->pdo->prepare('UPDATE flat_share SET name=:name, address=:address, start_date=:strat_date, end_date=:end_date WHERE id = :id');
+            $query->bindValue('id', $id, \PDO::PARAM_INT);
+            $query->bindValue('name', $name, \PDO::PARAM_STR);
+            $query->bindValue('address', $address, \PDO::PARAM_STR);
+            $query->bindValue('start_date', $start_date);
+            $query->bindValue('end_date', $end_date);
 
-        $query->execute();
+            $query->execute();
 
-        return $id;
+            return $id;
+        } catch (\Exception $e) {
+            return $e;
+        }
     }
 
 
     /**
-     * @param int $userId
-     * @param int $flatshareId
+     * @param int $user_id
+     * @param int $flatshare_id
      * @return int|\Exception
      */
-    public function insertRoomateHasFlatshare(int $userId, int $flatshareId) :int|\Exception
+    public function insertRoomateHasFlatshare(int $flatshare_id, int $user_id, int $role = 1) :int|\Exception
     {
         try {
-            $query = $this->pdo->prepare('INSERT INTO roomate_has_flat_share ( roommate_id , flat_share_id, role) VALUES (:roomate_id, :flat_share_id, :role)');
-            $query->bindValue('roomate_id', $userId, \PDO::PARAM_INT);
-            $query->bindValue('flat_share_id', $flatshareId, \PDO::PARAM_INT);
-            $query->bindValue('role', 1, \PDO::PARAM_INT);
+            $query = $this->pdo->prepare('INSERT INTO roomate_has_flat_share ( roommate_id , flat_share_id, role) VALUES (:roommate_id, :flat_share_id, :role)');
+            $query->bindValue('roommate_id', $user_id, \PDO::PARAM_INT);
+            $query->bindValue('flat_share_id', $flatshare_id, \PDO::PARAM_INT);
+            $query->bindValue('role', $role, \PDO::PARAM_INT);
 
             $query->execute();
 
@@ -161,4 +173,18 @@ class FlatshareManager extends BaseManager
             return $e;
         }
     }
+
+    public function deleteRoomateHasFlatshare( int $flatshare_id, int $roommate_id)
+    {
+        try {
+            $query = $this->pdo->prepare('DELETE FROM roomate_has_flat_share WHERE roommate_id=:roommate_id AND flat_share_id=:flat_share_id');
+            $query->bindValue('roommate_id', $roommate_id, \PDO::PARAM_INT);
+            $query->bindValue('flat_share_id', $flatshare_id, \PDO::PARAM_INT);
+            $query->execute();
+        } catch (\Exception $e) {
+            return $e;
+        }
+        return null;
+    }
+
 }
