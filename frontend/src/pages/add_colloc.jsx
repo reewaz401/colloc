@@ -10,7 +10,9 @@ import IconButton from '@mui/material/IconButton';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Formik, Field, Form, ErrorMessage, FieldArray } from 'formik';
 import { handlePostFormReq } from '../utils/req';
+import { useSelector } from 'react-redux';
 export default function AddColloc() {
+  const  userInfo  = useSelector(state => state.auth);
   const [expense, setExpense] = useState([]);
   const [numExpense, setNumExpense] = useState([1]);
   const [showSnack, setShowSanck] = useState(false);
@@ -44,17 +46,26 @@ export default function AddColloc() {
     console.log(expense);
   };
     const [collocInfo, setCollocInfo] = useState({
-        address: "",
-        end_date: "",
-        image: "",
+      "id_creator": userInfo.id,
+      "address": "6 rue jusdsdsdstin",
+      "name": "NASSCOLOC",
+      "start_date": "2023/02/01",
+      "end_date": "2023/02/01",
     });
   const handleChange = (event, index) => {
-    setCollocInfo({ ...collocInfo, [event.target.name]: event.target.value });
+    if (event.target.name == "start_date" || event.target.name == "end_date") {
+      console.log("EMD DATE", event.target.value.format("YYYY/MM/DD"));
+      setCollocInfo({ ...collocInfo, [event.target.name]: event.target.value.format("YYYY/MM/DD") });
+    }
+    else {
+      
+    
+      setCollocInfo({ ...collocInfo, [event.target.name]: event.target.value });
+    }
   };
   const handleSubmit = async () => {
   //  event.preventDefault();
     try {
-      console.log("Submit");
       let response = await handlePostFormReq("/create_flatshare", collocInfo);
       if (response.statut !== 200) {
         console.log(response);
@@ -126,12 +137,20 @@ export default function AddColloc() {
            
           />
         </div>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                      <DatePicker
+    label="Start date"
+    value={collocInfo.start_date}
+                          onChange={(newValue) => {
+        setCollocInfo({ ...collocInfo, start_date: newValue.format("YYYY/MM/DD")});;
+    }}
+    renderInput={(params) => <TextField {...params} />}
+                        />
   <DatePicker
     label="End date"
     value={collocInfo.end_date}
-    onChange={(newValue) => {
-        setCollocInfo({ ...collocInfo, end_date: newValue });;
+                          onChange={(newValue) => {
+        setCollocInfo({ ...collocInfo, end_date: newValue.format("YYYY/MM/DD")});;
     }}
     renderInput={(params) => <TextField {...params} />}
                         />

@@ -1,8 +1,10 @@
 import React, { Component, useState } from 'react'
 import { postsignIn, postSignOut, postsignUp } from '../controller/user_controller';
 import { Snackbar } from '@mui/material';
-import  { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
 import { handlePostFormReq } from '../utils/req';
+import { storeUserInfo } from '../store/actions/simpleAction';
 export default function Login() {
   const [userInfo, setUesrInfo] = useState({
 firstname: "",
@@ -11,6 +13,7 @@ username: "",
 email: "",
 pwd: "",
   });
+  const dispatch = useDispatch();
   const [showSnack, setShowSanck] = useState(false);
   const [errMessage, setErrMessage] = useState("");
   const navigate = useNavigate();
@@ -27,11 +30,11 @@ pwd: "",
     event.preventDefault();
     try {
       let response = await handlePostFormReq("/signin", userInfo);
-      if (response.statut !== 200) {
-        console.log(response);
+      if (response.status !== 200) {
         setShowSanck(true);
         setErrMessage(response.message);
       } else {
+        dispatch(storeUserInfo(response.data));
         navigate("/home");
       }
     } catch (err) {

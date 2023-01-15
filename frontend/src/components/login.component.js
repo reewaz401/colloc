@@ -6,7 +6,10 @@ import '../index.css'
 import SimpleSnackBar from './snackBar';
 import { Snackbar } from '@mui/material';
 import { handlePostFormReq, handlePostReq } from '../utils/req';
+import { useDispatch } from 'react-redux';
+import { storeUserInfo } from '../store/actions/simpleAction';
 export default function Login() {
+  const dispatch = useDispatch();
   const [userInfo, setUesrInfo] = useState({username:"",pwd:""});
   const [showSnack, setShowSanck] = useState(false);
   const [errMessage, setErrMessage] = useState("");
@@ -18,11 +21,12 @@ export default function Login() {
     event.preventDefault();
     try {
       let response = await handlePostFormReq("/login", userInfo);
-      if (response.statut !== 200) {
-        console.log(response);
+      if (response.status !== 200) {
         setShowSanck(true);
         setErrMessage(response.message);
       } else {
+        console.log(response.data);
+        dispatch(storeUserInfo(response.data[0]));
         navigate("/home");
       }
     } catch (err) {

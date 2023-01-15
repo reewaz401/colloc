@@ -25,9 +25,12 @@ export async function handlePostFormReq(api, body, headers) {
   let backResponse;
   var bodyFormData = new FormData();
   let keys = Object.keys(body);
+  console.log(body);
+  console.log(keys);
   keys.forEach((key) => {
     bodyFormData.append(key, body[key]);
   })
+  console.log("ff", bodyFormData);
   await axios
     .post(`${api_baseUrl}${api}`, bodyFormData)
     .then(async(response) => {
@@ -45,16 +48,9 @@ export async function handlePostFormReq(api, body, headers) {
 }
 export async function handleGetReq(api) {
   let backResponse;
-  let _token = localStorage.getItem("_token");
-  let config = {
-    headers: {
-      "x-access-token": `Bearer ${_token}`,
-      Permission: "2021D@T@f@RSt*6&%2-D@T@",
-    },
-  };
 
   await axios
-    .get(`${api_baseUrl}${api}`, config)
+    .get(`${api_baseUrl}${api}`)
     .then((response) => {
       backResponse = response;
     })
