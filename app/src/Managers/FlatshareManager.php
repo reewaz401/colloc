@@ -196,4 +196,24 @@ class FlatshareManager extends BaseManager
         return null;
     }
 
+    public function selectInfos(int $flatshare_id):array|\Exception
+    {
+        try {
+            $query = $this->pdo->prepare("SELECT *
+            FROM flat_share
+            LEFT JOIN roomate_has_flat_share ON flat_share.id = roomate_has_flat_share.flat_share_id
+            LEFT JOIN roommate ON roomate_has_flat_share.roommate_id = roommate.id
+            LEFT JOIN expenditure ON flat_share.id = expenditure.flat_share_id
+            LEFT JOIN monthly_fee ON flat_share.id = monthly_fee.flat_share_id
+            WHERE flat_share.id = :id");
+            $query->bindValue('id', $flatshare_id, \PDO::PARAM_INT);
+            $query->execute();
+
+            $data = $query->fetchAll(\PDO::FETCH_ASSOC);
+
+            return $data;
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
 }
