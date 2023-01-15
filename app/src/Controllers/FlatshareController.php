@@ -21,7 +21,7 @@ class FlatshareController extends AbstractController
 
         $userManager = new UserManager(new PDOFactory());
 
-        $result = $userManager->readUser($id_creator);
+        $result = $userManager->readUserById($id_creator);
 
         if($result instanceof \Exception) {
             $this->renderJson('Un problème est survenu lors de la création, problème avec le compte créant la collocation, veuillez réessayer !', 401);
@@ -104,7 +104,7 @@ class FlatshareController extends AbstractController
         $this->renderJson("La collocation $nameFlatshare a été modifiée avec succès !");
     }
 
-    #[Route('/selectInfos', name: "selectinfos", methods: ["GET"])]
+    #[Route('/selectInfos', name: "y", methods: ["GET"])]
     public function selectInfos()
     {
         $flatshareManager = new FlatshareManager(new PDOFactory());

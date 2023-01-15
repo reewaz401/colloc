@@ -142,9 +142,8 @@ export default function AddColloc() {
             <input
               type="number"
               name="expense"
-              className="form-control"
               placeholder="Depense"
-              value={collocInfo.address}
+              value={expense}
               onChange={handleExpenseChange}
             />
           </div>

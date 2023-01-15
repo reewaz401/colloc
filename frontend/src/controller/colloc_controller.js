@@ -1,4 +1,4 @@
-import { handleGetReq, handlePostReq } from "../utils/req";
+import { handleGetReq, handlePostFormReq, handlePostReq } from "../utils/req";
 
 export async function createColloc(collocInfo) { 
     //handlePostReq("/create_colloc", collocInfo );
@@ -7,4 +7,8 @@ export async function createColloc(collocInfo) {
 export async function getColloc(collocInfo) { 
     //handlePostReq("/create_colloc", collocInfo );
     handleGetReq("/view")
+}
+export async function addRoommate(collocInfo) { 
+    //handlePostReq("/create_colloc", collocInfo );
+    handlePostFormReq("/add_roommate", collocInfo);
 }
