@@ -68,8 +68,6 @@ class UserManager extends BaseManager
             $data = $query->fetch(\PDO::FETCH_ASSOC);
 
             return $data;
-
-
         }catch(PDOException $e){
             $e;
         } 

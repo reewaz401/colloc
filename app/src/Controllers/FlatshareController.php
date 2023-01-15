@@ -225,4 +225,31 @@ class FlatshareController extends AbstractController
         // all success //
         $this->renderJson("Le collocataire $roommateName a été supprimé avec succès de la collocation $flatshareName !");
     }
+
+    #[Route('/select_all_roommate', name: "kickRoommate", methods: ["POST", "GET"])]
+    public function selectAllRoommate()
+    {
+        $id_flatshare = $_REQUEST['id_flatshare'];
+
+        $flatshareManager = new FlatshareManager(new PDOFactory());
+
+        $result = $flatshareManager->selectOneFlatshare($id_flatshare);
+
+        if ($result instanceof \Exception) {
+            $this->renderJson("Nous n'arrivons pas à effectuer la récuperation, vérifiez que la collocation est toujours existante !", 401);
+            die;
+        }
+
+        $flatshareName = $result->getName();
+
+        $data = $flatshareManager->selectAllRoommate($id_flatshare);
+
+        if ($result instanceof \Exception) {
+            $this->renderJson("Une erreur est survenue lors de la récupération des collocataires de $flatshareName !", 401);
+            die;
+        }
+
+        // all success //
+        $this->renderJson($data);
+    }
 }
