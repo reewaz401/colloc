@@ -28,7 +28,7 @@ class ExpenditureController extends AbstractController
     $amount = $amount / $countUser;
     $amount =floatval(number_format($amount,2, '.',''));
     // var_dump ($amount);die;
-    $expenditureManager->createExpenditure($expenditureName, $flat_share_id, $amount, $creation_date, $id_creator, $queryUser);
+    $expenditureManager->createExpenditure($expenditureName, $flat_share_id, $amount, $id_creator, $queryUser);
   }
   #[Route('/update_payed', name: "payed-expenditure", methods: ["POST", "GET"])]
   public function update_payed()

@@ -8,7 +8,7 @@ use App\Interfaces\Database;
 
 class ExpenditureManager extends BaseManager
 {
-  public function createExpenditure(string $expenditureName, int $flat_share_id, float $amount, string $creation_date, int $id_creator, $queryUser)
+  public function createExpenditure(string $expenditureName, int $flat_share_id, float $amount, ? int $id_creator, $queryUser)
   {
     $uniqId = uniqid('', true);
     while ($data = $queryUser->fetch(\PDO::FETCH_ASSOC)) {
@@ -18,12 +18,11 @@ class ExpenditureManager extends BaseManager
         $payed = 0;
       }
 
-      $query = $this->pdo->prepare('INSERT INTO expenditure ( expenditure_name ,flat_share_id , roommate_id, amount, creation_date,payed,uniqId) VALUES (:expenditureName, :flat_share_id, :roommate_id, :amount,:creation_date,:payed,:uniqId)');
+      $query = $this->pdo->prepare('INSERT INTO expenditure ( expenditure_name ,flat_share_id , roommate_id, amount,payed,uniqId) VALUES (:expenditureName, :flat_share_id, :roommate_id, :amount,:payed,:uniqId)');
       $query->bindValue('expenditureName', $expenditureName, \PDO::PARAM_STR);
       $query->bindValue('flat_share_id', $flat_share_id, \PDO::PARAM_INT);
       $query->bindValue('roommate_id', $data['roommate_id'], \PDO::PARAM_INT);
       $query->bindValue('amount', ($amount), \PDO::PARAM_STR);
-      $query->bindValue('creation_date', $creation_date, \PDO::PARAM_STR);
       $query->bindValue('payed', $payed, \PDO::PARAM_BOOL);
       $query->bindValue('uniqId', ($uniqId), \PDO::PARAM_STR);
       $query->execute();
@@ -105,20 +104,20 @@ class ExpenditureManager extends BaseManager
     return $data;
 
   }
-  public function createExpenditureMonth(string $expenditureName, int $flat_share_id, int $amount, string $creation_date, int $id_creator, $queryUser)
-  {
-    $uniqId = uniqid('', true);
-    while ($data = $queryUser->fetch(\PDO::FETCH_ASSOC)) {
-      $query = $this->pdo->prepare('INSERT INTO expenditure ( expenditure_name ,flat_share_id , roommate_id, amount, creation_date,uniqId) VALUES (:expenditureName, :flat_share_id, :roommate_id, :amount,:creation_date,:uniqId)');
-      $query->bindValue('expenditureName', $expenditureName, \PDO::PARAM_STR);
-      $query->bindValue('flat_share_id', $flat_share_id, \PDO::PARAM_INT);
-      $query->bindValue('roommate_id', $data['roommate_id'], \PDO::PARAM_INT);
-      $query->bindValue('amount', ($amount), \PDO::PARAM_INT);
-      $query->bindValue('creation_date', $creation_date, \PDO::PARAM_STR);
+  // public function createExpenditureMonth(string $expenditureName, int $flat_share_id, int $amount, string $creation_date, int $id_creator, $queryUser)
+  // {
+  //   $uniqId = uniqid('', true);
+  //   while ($data = $queryUser->fetch(\PDO::FETCH_ASSOC)) {
+  //     $query = $this->pdo->prepare('INSERT INTO expenditure ( expenditure_name ,flat_share_id , roommate_id, amount, creation_date,uniqId) VALUES (:expenditureName, :flat_share_id, :roommate_id, :amount,:creation_date,:uniqId)');
+  //     $query->bindValue('expenditureName', $expenditureName, \PDO::PARAM_STR);
+  //     $query->bindValue('flat_share_id', $flat_share_id, \PDO::PARAM_INT);
+  //     $query->bindValue('roommate_id', $data['roommate_id'], \PDO::PARAM_INT);
+  //     $query->bindValue('amount', ($amount), \PDO::PARAM_INT);
+  //     $query->bindValue('creation_date', $creation_date, \PDO::PARAM_STR);
 
-      $query->bindValue('uniqId', ($uniqId), \PDO::PARAM_STR);
-      $query->execute();
-    }
-  }
+  //     $query->bindValue('uniqId', ($uniqId), \PDO::PARAM_STR);
+  //     $query->execute();
+  //   }
+  // }
 
 }
