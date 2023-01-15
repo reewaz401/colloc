@@ -34,7 +34,8 @@ CREATE TABLE `expenditure` (
   `expenditure_name` varchar(255) NOT NULL,
   `amount` int(11) NOT NULL,
   `creation_date` date NOT NULL DEFAULT current_timestamp(),
-  `payed` tinyint(1) NOT NULL DEFAULT 0
+  `payed` tinyint(1) NOT NULL DEFAULT 0,
+  `uniqId` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
