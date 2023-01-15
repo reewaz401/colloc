@@ -95,7 +95,7 @@ class FlatShare extends BaseEntity
     /**
      * @return string
      */
-    public function getImage(): string
+    public function getImage(): string|null
     {
         return $this->image;
     }
@@ -103,9 +103,9 @@ class FlatShare extends BaseEntity
     /**
      * @param string $image
      */
-    public function setImage(string $image): void
+    public function setImage(string|null $image): void
     {
-        $this->image = $image;
+        $this->image = '$image';
     }
 
 

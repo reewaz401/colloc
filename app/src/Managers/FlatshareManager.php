@@ -2,6 +2,7 @@
 
 namespace App\Managers;
 
+use App\Entities\FlatShare;
 use PDOException;
 
 class FlatshareManager extends BaseManager
@@ -12,20 +13,32 @@ class FlatshareManager extends BaseManager
      * @param $address
      * @param $start_date
      * @param $end_date
-     * @return void
+     * @return int|\Exception
      *
      * @comment Cette fonction appel 2 fonctions
      *  1- la première permet d'insérer des données dans la table 'Flatshare'
      *  2- la deuxième s'occupe d'insérer des données dans la table de jointure/associative ( n to n )
+     *  En cas d'erreur dans une des deux requête on rollback
      */
-    public function createFlatshare(int $id_creator, string $name, string $address, string $start_date, string $end_date):void
+    public function createFlatshare(int $id_creator, string $name, string $address, string $start_date, string $end_date):int|\Exception
     {
         $this->pdo->query('START TRANSACTION');
-        $response = $this->insertFlatshare($name, $address, $start_date, $end_date);
-//        $this->insertRoomateHasFlatshare($id_creator, $flatshareId);
-        $this->pdo->query('ROLLBACK');
-        if ($response instanceof \Exception) {
-            return ;
+
+        $res_flatshare = $this->insertFlatshare($name, $address, $start_date, $end_date);
+        $res_roommate_has =  $this->insertRoomateHasFlatshare($res_flatshare, $id_creator);
+
+        if ($res_flatshare instanceof \Exception || $res_roommate_has instanceof \Exception) {
+
+            // Fail case //
+            $this->pdo->query('ROLLBACK');
+            return ($res_flatshare instanceof \Exception) ? $res_flatshare : $res_roommate_has;
+
+        }else{
+
+            // success case //
+            $this->pdo->query('COMMIT');
+
+            return $res_flatshare;
         }
     }
 
@@ -34,9 +47,9 @@ class FlatshareManager extends BaseManager
      * @param string $address
      * @param string $start_date
      * @param string $end_date
-     * @return int|string
+     * @return int|\Exception
      */
-    public function insertFlatshare(string $name, string $address, string $start_date, string $end_date): int|string|\Exception
+    public function insertFlatshare(string $name, string $address, string $start_date, string $end_date): int|\Exception
     {
         try {
             $query = $this->pdo->prepare('INSERT INTO flat_share ( name , address, start_date, end_date) VALUES (:name, :address, :start_date, :end_date)');
@@ -46,71 +59,141 @@ class FlatshareManager extends BaseManager
             $query->bindValue('end_date', $end_date);
 
             $query->execute();
+            return $this->pdo->lastInsertId();
         } catch (\Exception $e) {
+
             return $e;
         }
-        return $this->pdo->lastInsertId();
-    }
-
-    public function selectOneColloc() : array
-    {
-        $query = $this->pdo->prepare('SELECT * FROM flat_share WHERE id = :id');
-
-        $data = $query->fetch(\PDO::FETCH_ASSOC);
-
-        return new ($data);
-    }
-
-    public function selectAllColloc() : array
-    {
-        $query = $this->pdo->query('SELECT * FROM flat_share WHERE 1');
-
-        $arrayColloc = [];
-
-        while ($data = $query->fetch(\PDO::FETCH_ASSOC)) {
-            $arrayColloc[] = new ($data);
-        }
-
-        return $arrayColloc;
-    }
-
-    public function deleteFlatshare(int $id)
-    {
-        $query = $this->pdo->prepare('DELETE FROM flat_share WHERE id=:id');
-        $query->bindValue('id', $id, \PDO::PARAM_INT);
-        $query->execute();
-    }
-
-    public function updateFlatshare(int $id, string $name, string $address, $start_date, $end_date):int
-    {
-        $query = $this->pdo->prepare('UPDATE flat_share SET name=:name, address=:address, start_date=:strat_date, end_date=:end_date WHERE id = :id');
-        $query->bindValue('id', $id, \PDO::PARAM_INT);
-        $query->bindValue('name', $name, \PDO::PARAM_STR);
-        $query->bindValue('address', $address, \PDO::PARAM_STR);
-        $query->bindValue('start_date', $start_date);
-        $query->bindValue('end_date', $end_date);
-
-        $query->execute();
-
-        return $id;
     }
 
     /**
-     * @param int $userId
-     * @param int $flatshareId
-     * @return void
+     * @param int $id
+     * @return FlatShare|\Exception
      */
-    public function insertRoomateHasFlatshare(int $userId, int $flatshareId)
+    public function selectOneFlatshare(int $id) : FlatShare|\Exception
     {
         try {
-            $query = $this->pdo->prepare('INSERT INTO roomate_has_flat_share ( roommate_id , flat_share_id, role) VALUES (:roomate_id, :flat_share_id, :role)');
-            $query->bindValue('roomate_id', $userId, \PDO::PARAM_INT);
-            $query->bindValue('flat_share_id', $flatshareId, \PDO::PARAM_INT);
-            $query->bindValue('role', 1, \PDO::PARAM_INT);
+            $query = $this->pdo->prepare('SELECT * FROM flat_share WHERE id = :id');
+            $query->bindValue('id', $id, \PDO::PARAM_INT);
+            $query->execute();
 
+            $data = $query->fetch(\PDO::FETCH_ASSOC);
+
+            return ($data) ? new FlatShare($data) : throw new \Exception();
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
+
+    /**
+     * @param int $id
+     * @return array|\Exception
+     */
+    public function selectOneFlatshareToReturn(int $id) : array|\Exception
+    {
+        try {
+            $query = $this->pdo->prepare('SELECT * FROM flat_share WHERE id = :id');
+            $query->bindValue('id', $id, \PDO::PARAM_INT);
+            $query->execute();
+            $data = $query->fetch(\PDO::FETCH_ASSOC);
+            return $data;
+        }catch (\Exception $e) {
+            return $e;
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function selectAllFlatshare() : array|\Exception
+    {
+        try {
+            $query = $this->pdo->query('SELECT * FROM flat_share WHERE 1');
+
+            $data = $query->fetchAll(\PDO::FETCH_ASSOC);
+            // $data[] = new FlatShare($data);
+            return $data;
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
+
+    /**
+     * @param int $id
+     * @return ?\Exception
+     */
+    public function deleteFlatshare(int $id): ?\Exception
+    {
+        try {
+            $query = $this->pdo->prepare('DELETE FROM flat_share WHERE id=:id');
+            $query->bindValue('id', $id, \PDO::PARAM_INT);
             $query->execute();
         } catch (\Exception $e) {
             return $e;
         }
+        return null;
     }
+
+    /**
+     * @param int $id
+     * @param string $name
+     * @param string $address
+     * @param $start_date
+     * @param $end_date
+     * @return int|\Exception
+     */
+    public function updateFlatshare(int $id, string $name, string $address, $start_date, $end_date):int|\Exception
+    {
+        try {
+            $query = $this->pdo->prepare('UPDATE flat_share SET name=:name, address=:address, start_date=:strat_date, end_date=:end_date WHERE id = :id');
+            $query->bindValue('id', $id, \PDO::PARAM_INT);
+            $query->bindValue('name', $name, \PDO::PARAM_STR);
+            $query->bindValue('address', $address, \PDO::PARAM_STR);
+            $query->bindValue('start_date', $start_date);
+            $query->bindValue('end_date', $end_date);
+
+            $query->execute();
+
+            return $id;
+        } catch (\Exception $e) {
+            return $e;
+        }
+    }
+
+
+    /**
+     * @param int $user_id
+     * @param int $flatshare_id
+     * @return int|\Exception
+     */
+    public function insertRoomateHasFlatshare(int $flatshare_id, int $user_id, int $role=1) :int|\Exception
+    {
+        try {
+            $query = $this->pdo->prepare('INSERT INTO roomate_has_flat_share ( roommate_id , flat_share_id, role) VALUES (:roommate_id, :flat_share_id, :role)');
+            $query->bindValue('roommate_id', $user_id, \PDO::PARAM_INT);
+            $query->bindValue('flat_share_id', $flatshare_id, \PDO::PARAM_INT);
+            $query->bindValue('role', $role, \PDO::PARAM_INT);
+
+            $query->execute();
+
+            return $this->pdo->lastInsertId();
+        } catch (\Exception $e) {
+
+            return $e;
+        }
+    }
+
+    public function deleteRoomateHasFlatshare( int $flatshare_id, int $roommate_id):?\Exception
+    {
+        try {
+            $query = $this->pdo->prepare('DELETE FROM roomate_has_flat_share WHERE roommate_id=:roommate_id AND flat_share_id=:flat_share_id');
+            $query->bindValue('roommate_id', $roommate_id, \PDO::PARAM_INT);
+            $query->bindValue('flat_share_id', $flatshare_id, \PDO::PARAM_INT);
+            $query->execute();
+        } catch (\Exception $e) {
+            return $e;
+        }
+        return null;
+    }
+
 }
