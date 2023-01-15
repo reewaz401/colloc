@@ -42,7 +42,7 @@ class UserController extends AbstractController
 
         if(isset($getUser[0])){
             if (!password_verify($pwd, $getUser[0]->getPwd())){
-                $this->renderJsonError(403, "Identifiants incorrects");
+                $this->renderJson("Identifiants incorrects", 403);
             }
             elseif(password_verify($pwd, $getUser[0]->getPwd())){
                 $sessionManager->login($username);
@@ -51,7 +51,7 @@ class UserController extends AbstractController
                 $this->renderJson([$getUserInfo]);
             }  
         }else{
-            $this->renderJsonError(403, "Identifiants incorrects");
+            $this->renderJson("Identifiants incorrects",403 );
 
         }
     }
@@ -73,9 +73,8 @@ class UserController extends AbstractController
         $signin = filter_input(INPUT_POST, "signin");
         $getUser = $userManager->readUser($username);
 
-        
-        if(isset($getUser[0])){
-            $this->renderJsonError(403, "Ce pseudo est déja utilisé, veuillez en choisir un autre.");
+        if($getUser){
+            $this->renderJson("Ce pseudo est déja utilisé, veuillez en choisir un autre.", 403);
         }else{
             $userManager->creatUser($username, $pwd_hash, $firstname, $lastname, $email, $birthdate);
 
