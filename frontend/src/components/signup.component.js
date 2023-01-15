@@ -32,7 +32,7 @@ pwd: "",
       let response = await handlePostFormReq("/signin", userInfo);
       if (response.status !== 200) {
         setShowSanck(true);
-        setErrMessage(response.message);
+        setErrMessage(response.data);
       } else {
         dispatch(storeUserInfo(response.data));
         navigate("/home");

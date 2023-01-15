@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
+import { useSelector } from 'react-redux';
 import  { useNavigate } from 'react-router-dom'
 import { createColloc } from '../controller/colloc_controller';
 
@@ -30,6 +30,7 @@ const rows = [
 ];
 
 export default function InviteColloc() {
+    const { flatId } = useSelector(state => state.auth);
     const navigate = useNavigate();
     const [selectColloc, setSelectColloc] = useState();
     const [emailColloc, setEmailColloc] = useState();
@@ -51,7 +52,7 @@ export default function InviteColloc() {
   return (
       <div style={{ height: 400, width: '100%', background: "white", marginTop: "100px" }}>
               {/* <Stack direction="row" spacing={1}> */}
-
+{flatId}
     {/* </Stack> */}
           <TextField
               id="outlined-number"

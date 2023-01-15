@@ -1,10 +1,11 @@
-import { SET_USER_INFO } from "../type";
+import { SET_FLAT_ID, SET_USER_INFO } from "../type";
 
 /* 
   src/reducers/simpleReducer.js
 */
 const initialState = {
-  usersInfo: null
+  usersInfo: null,
+  flatId: null
 }
 const authReducer = (state = initialState, action) => {
   
@@ -14,6 +15,11 @@ const authReducer = (state = initialState, action) => {
         ...state,
         usersInfo: action.data
       }
+      case SET_FLAT_ID:
+        return {
+          ...state,
+          flatId: action.data
+        }
     default:
       return state
   }

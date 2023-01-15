@@ -1,216 +1,157 @@
-import React, { Component, useState } from 'react'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { createColloc } from '../controller/colloc_controller';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { TextField } from '@mui/material';
-import { Snackbar } from '@mui/material';
-import  { useNavigate } from 'react-router-dom'
-import FormControl from '@mui/material/FormControl';
-import IconButton from '@mui/material/IconButton';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Formik, Field, Form, ErrorMessage, FieldArray } from 'formik';
-import { handlePostFormReq } from '../utils/req';
-import { useSelector } from 'react-redux';
+import React, { Component, useState } from "react";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { createColloc } from "../controller/colloc_controller";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { TextField } from "@mui/material";
+import { Snackbar } from "@mui/material";
+import { Form, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import FormControl from "@mui/material/FormControl";
+import IconButton from "@mui/material/IconButton";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { handlePostFormReq } from "../utils/req";
+import { useSelector } from "react-redux";
+import { storeFlatId } from "../store/actions/flatIdAction";
 export default function AddColloc() {
-  const  userInfo  = useSelector(state => state.auth);
-  const [expense, setExpense] = useState([]);
+  const userInfo = useSelector((state) => state.auth);
   const [numExpense, setNumExpense] = useState([1]);
   const [showSnack, setShowSanck] = useState(false);
   const [errMessage, setErrMessage] = useState("");
   const navigate = useNavigate();
-  const handleClose = (event,reason) => {
-    if (reason === 'clickaway') {
+  const dispatch = useDispatch();
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
       return;
     }
     setShowSanck(false);
   };
- const initialValues = {
-  friends: [
-    {
-      name: '',
-      price: 0,
-    },
-  ],
-};
+  const initialValues = {
+    friends: [
+      {
+        name: "",
+        price: 0,
+      },
+    ],
+  };
 
   const handleTypeExpense = (event, index) => {
-    const mapInfo = { "id": index, "key": event.target.value, value: "" };
+    const mapInfo = { id: index, key: event.target.value, value: "" };
     setExpense(expense.push(mapInfo));
   };
   const handleAmountExpense = (event, index) => {
     expense.forEach((ele) => {
       if (ele.id == index) {
-        ele.value = event.target.value
+        ele.value = event.target.value;
       }
-    })
+    });
     console.log(expense);
   };
-    const [collocInfo, setCollocInfo] = useState({
-      "id_creator": userInfo.id,
-      "address": "6 rue jusdsdsdstin",
-      "name": "NASSCOLOC",
-      "start_date": "2023/02/01",
-      "end_date": "2023/02/01",
-    });
+  const [collocInfo, setCollocInfo] = useState({
+    id_creator: 2,
+    address: "6 rue jusdsdsdstin",
+    name: "NASSCOLOC",
+    start_date: "2023/02/01",
+    end_date: "2023/02/01",
+  });
+  const [expense, setExpense] = useState(0);
   const handleChange = (event, index) => {
     if (event.target.name == "start_date" || event.target.name == "end_date") {
       console.log("EMD DATE", event.target.value.format("YYYY/MM/DD"));
-      setCollocInfo({ ...collocInfo, [event.target.name]: event.target.value.format("YYYY/MM/DD") });
-    }
-    else {
-      
-    
+      setCollocInfo({
+        ...collocInfo,
+        [event.target.name]: event.target.value.format("YYYY/MM/DD"),
+      });
+    } else {
       setCollocInfo({ ...collocInfo, [event.target.name]: event.target.value });
     }
   };
   const handleSubmit = async () => {
-  //  event.preventDefault();
+    //  event.preventDefault();
     try {
       let response = await handlePostFormReq("/create_flatshare", collocInfo);
-      if (response.statut !== 200) {
-        console.log(response);
+
+      if (response.status !== 200) {
         setShowSanck(true);
         setErrMessage(response.message);
       } else {
+        dispatch(storeFlatId(response.data.id));
         navigate("/invite_collocation");
       }
     } catch (err) {
       setShowSanck(true);
       setErrMessage("Something is wrong");
-    }  
-      
+    }
+
     // prevents the submit button from refreshing the page
     //event.preventDefault();
-    
   };
-  const handleExpenseSubmit = async (val) => {
-    // event.preventDefault();
-    try {
-      let response = await handlePostFormReq("/create_expenditure", val);
-      if (response.statut !== 200) {
-        console.log(response);
-        setShowSanck(true);
-        setErrMessage(response.message);
-      } else {
-        navigate("/invite_collocation");
-      }
-    } catch (err) {
-      setShowSanck(true);
-      setErrMessage("Something is wrong");
-    }  
-  }
+  const handleExpenseChange = async (e) => {
+    setExpense(e.target.value);
+  };
   return (
     <>
-        <Snackbar
-      message={errMessage}
-      autoHideDuration={4000}
-      open={showSnack}
-      onClose={handleClose}
-    ></Snackbar>
-    <div className="auth-wrapper">
-    <div className='auth-inner'>
+      <Snackbar
+        message={errMessage}
+        autoHideDuration={4000}
+        open={showSnack}
+        onClose={handleClose}
+      ></Snackbar>
+      <div className="auth-wrapper">
+        <div className="auth-inner">
+          <h3>Creation du Collocation</h3>
 
-        <h3>Creation du Collocation</h3>
-        
-            <Formik
-      initialValues={initialValues}
-            onSubmit={async (values) => {
-              await handleSubmit();
-             // await handleExpenseSubmit(values["friends"]);
-        
-      }}
-    >
-      {({ values }) => (
-        <Form>
-          <FieldArray name="friends">
-            {({ insert, remove, push }) => (
-              <div>
-                <div className="mb-3">
-          <label>Addresse</label>
-          <input
-            type="text"
-            name="address"
-            className="form-control"
-            placeholder="Addresse"
-            value={collocInfo.address}
-            onChange={handleChange}
-           
-          />
-        </div>
-                      <LocalizationProvider dateAdapter={AdapterMoment}>
-                      <DatePicker
-    label="Start date"
-    value={collocInfo.start_date}
-                          onChange={(newValue) => {
-        setCollocInfo({ ...collocInfo, start_date: newValue.format("YYYY/MM/DD")});;
-    }}
-    renderInput={(params) => <TextField {...params} />}
-                        />
-  <DatePicker
-    label="End date"
-    value={collocInfo.end_date}
-                          onChange={(newValue) => {
-        setCollocInfo({ ...collocInfo, end_date: newValue.format("YYYY/MM/DD")});;
-    }}
-    renderInput={(params) => <TextField {...params} />}
-                        />
-                        </LocalizationProvider>
-                        
-                {values.friends.length > 0 &&
-                  values.friends.map((friend, index) => (
-                    <div className="row" key={index}>
-                      <div className="col">
-                        <label htmlFor={`friends.${index}.name`}>Expense Name</label>
-                        
-                        <Field
-                          name={`friends.${index}.name`}
-                          placeholder="Loyer"
-                          type="text"
-                        />
-                        <ErrorMessage
-                          name={`friends.${index}.name`}
-                          component="div"
-                          className="field-error"
-                        />
-                      </div>
-                      <div className="col">
-                        <label htmlFor={`friends.${index}.price`}>Prix</label>
-                        <Field
-                          name={`friends.${index}.price`}
-                          placeholder="123"
-                          type="number"
-                        />
-                        <ErrorMessage
-                          name={`friends.${index}.name`}
-                          component="div"
-                          className="field-error"
-                        />
-                      </div>
-                      <div className="col">
-                        <button
-                          type="button"
-                          className="secondary"
-                          onClick={() => remove(index)}
-                        >
-                          X
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                <button
-                  type="button"
-                  className="secondary"
-                  onClick={() => push({ name: '', price: '' })}
-                >
-                  Add Expense
-                </button>
-              </div>
-            )}
-          </FieldArray>
-          <button type="submit">Suivant</button>
-        </Form>
-      )}
-    </Formik>
+          <div>
+            <div className="mb-3">
+              <label>Addresse</label>
+              <input
+                type="text"
+                name="address"
+                className="form-control"
+                placeholder="Addresse"
+                value={collocInfo.address}
+                onChange={handleChange}
+              />
+            </div>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DatePicker
+                label="Start date"
+                value={collocInfo.start_date}
+                onChange={(newValue) => {
+                  setCollocInfo({
+                    ...collocInfo,
+                    start_date: newValue.format("YYYY/MM/DD"),
+                  });
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+              <DatePicker
+                label="End date"
+                value={collocInfo.end_date}
+                onChange={(newValue) => {
+                  setCollocInfo({
+                    ...collocInfo,
+                    end_date: newValue.format("YYYY/MM/DD"),
+                  });
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </div>
+          <div className="mb-3">
+            <label>Menuel</label>
+            <input
+              type="number"
+              name="expense"
+              className="form-control"
+              placeholder="Depense"
+              value={collocInfo.address}
+              onChange={handleExpenseChange}
+            />
+          </div>
+
+          <button type="submit" onClick={handleSubmit}>
+            Suivant
+          </button>
 
           <br></br>
           <br></br>
@@ -243,14 +184,13 @@ export default function AddColloc() {
               </div>
           })
           } */}
-        <div className="d-grid">
-          {/* <button type="submit" name="submit" className="btn btn-primary">
+          <div className="d-grid">
+            {/* <button type="submit" name="submit" className="btn btn-primary">
             Suivant
           </button> */}
-        </div>
-
+          </div>
         </div>
       </div>
-      </>
-    )
+    </>
+  );
 }

@@ -198,4 +198,5 @@ class FlatshareController extends AbstractController
         // all success //
         $this->renderJson("Le collocataire $roommateName a été supprimé avec succès de la collocation $flatshareName !");
     }
+
 }

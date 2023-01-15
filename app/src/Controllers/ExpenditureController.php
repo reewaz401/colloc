@@ -12,6 +12,7 @@ class ExpenditureController extends AbstractController
   #[Route('/create_expenditure', name: "create-expenditure", methods: ["POST", "GET"])]
   public function create_expenditure()
   {
+
     $id_creator = $_REQUEST['id_creator'];
     $expenditureName = $_REQUEST['expenditureName'];
     $amount = $_REQUEST['amount'];

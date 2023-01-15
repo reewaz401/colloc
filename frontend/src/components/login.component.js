@@ -23,10 +23,9 @@ export default function Login() {
       let response = await handlePostFormReq("/login", userInfo);
       if (response.status !== 200) {
         setShowSanck(true);
-        setErrMessage(response.message);
+        setErrMessage(response.data);
       } else {
-        console.log(response.data);
-        dispatch(storeUserInfo(response.data[0]));
+        dispatch(storeUserInfo(response.data));
         navigate("/home");
       }
     } catch (err) {
