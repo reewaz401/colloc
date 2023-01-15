@@ -104,6 +104,20 @@ class FlatshareController extends AbstractController
         $this->renderJson("La collocation $nameFlatshare a été modifiée avec succès !");
     }
 
+    #[Route('/selectInfos', name: "selectinfos", methods: ["GET"])]
+    public function selectInfos()
+    {
+        $flatshareManager = new FlatshareManager(new PDOFactory());
+
+        $data = $flatshareManager->selectAllFlatshare();
+
+        if ($data instanceof \Exception) {
+            $this->renderJson("Impossible d'effectuer la sélection, veuillez réessayer !", 501);
+            die;
+        }
+
+        $this->renderJson($data);
+    }
 
     #[Route('/selectAll', name: "selectall", methods: ["GET"])]
     public function select()
@@ -123,9 +137,23 @@ class FlatshareController extends AbstractController
     #[Route('/add_roommate', name: "addRoommate", methods: ["POST", "GET"])]
     public function addRoommate()
     {
-        $id_new_roommate = $_REQUEST['new_roomate'];
+        $email_new_roommate = $_REQUEST['new_roomate'];
         $id_flatshare = $_REQUEST['id_flatshare'];
         $role = $_REQUEST['role'] ?? 0;
+
+        $userManager = new UserManager(new PDOFactory());
+
+        $result = $userManager->readUser($email_new_roommate);
+
+        if ($result instanceof \Exception) {
+            $this->renderJson("Nous n'arrivons pas à effectuer l'ajout du collocataire, vérifiez que le compte du collocataire est toujours existant !", 401);
+            die;
+        }
+
+        $id_new_roommate = $result->getId();
+
+        $roommateName = $result->getUsername();
+
         $flatshareManager = new FlatshareManager(new PDOFactory());
 
         $result = $flatshareManager->selectOneFlatshare($id_flatshare);
@@ -136,18 +164,6 @@ class FlatshareController extends AbstractController
         }
 
         $flatshareName = $result->getName();
-
-        $userManager = new UserManager(new PDOFactory());
-
-        $result = $userManager->readUser($id_new_roommate);
-
-        if ($result instanceof \Exception) {
-            $this->renderJson("Nous n'arrivons pas à effectuer l'ajout du collocataire, vérifiez que le compte du collocataire est toujours existant !", 401);
-            die;
-        }
-
-        $roommateName = $result->getUsername();
-
 
         $result = $flatshareManager->insertRoomateHasFlatshare($id_flatshare, $id_new_roommate, $role);
 
@@ -164,7 +180,19 @@ class FlatshareController extends AbstractController
     public function deleteRoomateFromFlatshare()
     {
         $id_flatshare = $_REQUEST['id_flatshare'];
-        $id_roommate = $_REQUEST['id_roommate'];
+        $email_roommate = $_REQUEST['email_roommate'];
+
+        $userManager = new UserManager(new PDOFactory());
+
+        $result = $userManager->readUser($email_roommate);
+
+        if ($result instanceof \Exception) {
+            $this->renderJson("Nous n'arrivons pas à effectuer la suppression vérifiez que le collocataire est toujours dans la collocation ou/et que son compte est toujours existant !", 401);
+            die;
+        }
+
+        $id_roommate = $result->getId();
+        $roommateName = $result->getUsername();
 
         $flatshareManager = new FlatshareManager(new PDOFactory());
 
@@ -177,17 +205,6 @@ class FlatshareController extends AbstractController
 
         $flatshareName = $result->getName();
 
-        $userManager = new UserManager(new PDOFactory());
-
-        $result = $userManager->readUser($id_roommate);
-
-        if ($result instanceof \Exception) {
-            $this->renderJson("Nous n'arrivons pas à effectuer la suppression vérifiez que le collocataire est toujours dans la collocation ou/et que son compte est toujours existant !", 401);
-            die;
-        }
-
-        $roommateName = $result->getUsername();
-
         $result = $flatshareManager->deleteRoomateHasFlatshare($id_flatshare, $id_roommate);
 
         if ($result instanceof \Exception) {
@@ -198,5 +215,4 @@ class FlatshareController extends AbstractController
         // all success //
         $this->renderJson("Le collocataire $roommateName a été supprimé avec succès de la collocation $flatshareName !");
     }
-
 }
