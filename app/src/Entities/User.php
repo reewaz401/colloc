@@ -14,7 +14,7 @@ class User extends BaseEntity
     private string $lastname;
     private string $firstname;
     private string $email;
-    private $birthdate;
+    private ?string $birthdate;
 
     //setters
     public function setUsername(string $username): User
@@ -59,7 +59,7 @@ class User extends BaseEntity
         return $this;
     }
 
-    public function setBirthdate($birthdate): User
+    public function setBirthdate(?string $birthdate): User
     {
         $this->birthdate = $birthdate;
         return $this;
