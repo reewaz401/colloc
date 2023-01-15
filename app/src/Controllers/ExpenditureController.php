@@ -24,7 +24,7 @@ class ExpenditureController extends AbstractController
     $expenditureManager = new ExpenditureManager(new PDOFactory());
     $countUser = $expenditureManager->countUser($flat_share_id);
     $queryUser = $expenditureManager->userFlatShare($flat_share_id);
-
+    var_dump($queryUser);die;
     $amount = $amount / $countUser;
     $amount =floatval(number_format($amount,2, '.',''));
     // var_dump ($amount);die;
@@ -44,12 +44,7 @@ class ExpenditureController extends AbstractController
   {
     $userId = $_REQUEST['user_id'];
     $flat_share_id = $_REQUEST['flat_share_id'];
-    $expenditureManageGet = new ExpenditureManager(new PDOFactory());
-    $getMonthFee= $expenditureManageGet->getMonthFee($flat_share_id);
 
-    if ($getMonthFee['date']==date('d')){
-
-    }
     // $getMonthFeeDate=$expenditureManageGet->UserExpenditure($flat_share_id);
     $data = $expenditureManageGet->UserExpenditure($userId, $flat_share_id);
     $this->renderJson($data);

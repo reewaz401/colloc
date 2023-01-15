@@ -126,7 +126,15 @@ class FlatshareController extends AbstractController
             $this->renderJson("Impossible de récupérer les infos liées à la collocation $nameFlatshare, veuillez réessayer !", 501);
             die;
         }
+         $expenditureManager = new ExpenditureManager(new PDOFactory());
+         $getMonthFee= $expenditureManager->getMonthFee($id_flatshare);
+
+        if ($getMonthFee['date']==date('d')){
+          $expenditureName=$getMonthFee['fee_name'];
+           $expenditureManager->createExpenditure($expenditureName, $id_flatshare, $amount, $id_creator, $queryUser);
+         }
         $this->renderJson($data);
+
     }
 
     #[Route('/selectAll', name: "selectall", methods: ["GET"])]
