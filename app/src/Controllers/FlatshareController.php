@@ -253,3 +253,4 @@ class FlatshareController extends AbstractController
         $this->renderJson($data);
     }
 }
+
