@@ -10,7 +10,7 @@ class ExpenditureManager extends BaseManager
 {
   public function createExpenditure(string $expenditureName, int $flat_share_id, int $amount, string $creation_date, int $id_creator, $queryUser)
   {
-    $uniqId = uniqid();
+    $uniqId = uniqid('', true);
     while ($data = $queryUser->fetch(\PDO::FETCH_ASSOC)) {
       if ($data['roommate_id'] == $id_creator) {
         $payed = 1;
@@ -25,7 +25,7 @@ class ExpenditureManager extends BaseManager
       $query->bindValue('amount', ($amount), \PDO::PARAM_INT);
       $query->bindValue('creation_date', $creation_date, \PDO::PARAM_STR);
       $query->bindValue('payed', $payed, \PDO::PARAM_BOOL);
-      $query->bindValue('uniqId', ($uniqId), \PDO::PARAM_INT);
+      $query->bindValue('uniqId', ($uniqId), \PDO::PARAM_STR);
       $query->execute();
     }
   }
