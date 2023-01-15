@@ -18,19 +18,26 @@ class FlatshareManager extends BaseManager
      * @comment Cette fonction appel 2 fonctions
      *  1- la première permet d'insérer des données dans la table 'Flatshare'
      *  2- la deuxième s'occupe d'insérer des données dans la table de jointure/associative ( n to n )
+     *  En cas d'erreur dans une des deux requête on rollback
      */
     public function createFlatshare(int $id_creator, string $name, string $address, string $start_date, string $end_date):int|\Exception
     {
         $this->pdo->query('START TRANSACTION');
 
         $res_flatshare = $this->insertFlatshare($name, $address, $start_date, $end_date);
-        $res_roommate_has =  $this->insertRoomateHasFlatshare($id_creator, $res_flatshare);
+        $res_roommate_has =  $this->insertRoomateHasFlatshare($res_flatshare, $id_creator);
 
         if ($res_flatshare instanceof \Exception || $res_roommate_has instanceof \Exception) {
+
+            // Fail case //
             $this->pdo->query('ROLLBACK');
             return ($res_flatshare instanceof \Exception) ? $res_flatshare : $res_roommate_has;
+
         }else{
+
+            // success case //
             $this->pdo->query('COMMIT');
+
             return $res_flatshare;
         }
     }
@@ -52,10 +59,11 @@ class FlatshareManager extends BaseManager
             $query->bindValue('end_date', $end_date);
 
             $query->execute();
+            return $this->pdo->lastInsertId();
         } catch (\Exception $e) {
+
             return $e;
         }
-        return $this->pdo->lastInsertId();
     }
 
     /**
@@ -71,7 +79,7 @@ class FlatshareManager extends BaseManager
 
             $data = $query->fetch(\PDO::FETCH_ASSOC);
 
-            return new FlatShare($data);
+            return ($data) ? new FlatShare($data) : throw new \Exception();
         } catch (\Exception $e) {
             return $e;
         }
@@ -158,7 +166,7 @@ class FlatshareManager extends BaseManager
      * @param int $flatshare_id
      * @return int|\Exception
      */
-    public function insertRoomateHasFlatshare(int $flatshare_id, int $user_id, int $role = 1) :int|\Exception
+    public function insertRoomateHasFlatshare(int $flatshare_id, int $user_id, int $role=1) :int|\Exception
     {
         try {
             $query = $this->pdo->prepare('INSERT INTO roomate_has_flat_share ( roommate_id , flat_share_id, role) VALUES (:roommate_id, :flat_share_id, :role)');
@@ -170,11 +178,12 @@ class FlatshareManager extends BaseManager
 
             return $this->pdo->lastInsertId();
         } catch (\Exception $e) {
+
             return $e;
         }
     }
 
-    public function deleteRoomateHasFlatshare( int $flatshare_id, int $roommate_id)
+    public function deleteRoomateHasFlatshare( int $flatshare_id, int $roommate_id):?\Exception
     {
         try {
             $query = $this->pdo->prepare('DELETE FROM roomate_has_flat_share WHERE roommate_id=:roommate_id AND flat_share_id=:flat_share_id');

@@ -24,13 +24,4 @@ abstract class AbstractController
                 'data' => [$data]]);
         }
     }
-
-//    public function renderJsonError(string $message, int $codeError = 503)
-//    {
-//        header('Content-Type: application/json');
-//        echo json_encode([
-//            'status' => $codeError,
-//            'data' => $message
-//        ]);
-//    }
 }
