@@ -104,11 +104,7 @@ class FlatshareController extends AbstractController
         $this->renderJson("La collocation $nameFlatshare a été modifiée avec succès !");
     }
 
-<<<<<<< HEAD
     #[Route('/select_infos', name: "selectinfos", methods: ["GET", "POST"])]
-=======
-    #[Route('/selectInfos', name: "y", methods: ["GET"])]
->>>>>>> origin/staging
     public function selectInfos()
     {
         $id_flatshare = $_REQUEST['id_flatshare'];
@@ -229,7 +225,6 @@ class FlatshareController extends AbstractController
         // all success //
         $this->renderJson("Le collocataire $roommateName a été supprimé avec succès de la collocation $flatshareName !");
     }
-<<<<<<< HEAD
 
     #[Route('/select_all_roommate', name: "kickRoommate", methods: ["POST", "GET"])]
     public function selectAllRoommate()
@@ -258,6 +253,3 @@ class FlatshareController extends AbstractController
         $this->renderJson($data);
     }
 }
-=======
-}
->>>>>>> origin/staging
