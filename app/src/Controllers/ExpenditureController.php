@@ -15,13 +15,19 @@ class ExpenditureController extends AbstractController
     $id_creator = $_REQUEST['id_creator'];
     $expenditureName = $_REQUEST['expenditureName'];
     $amount = $_REQUEST['amount'];
+    $amount= floatval($amount);
+
+
     $flat_share_id = $_REQUEST['flat_share_id'];
     $creation_date = $_REQUEST['creation_date'];
     // $uniqId = uniqid('', true);
     $expenditureManager = new ExpenditureManager(new PDOFactory());
     $countUser = $expenditureManager->countUser($flat_share_id);
     $queryUser = $expenditureManager->userFlatShare($flat_share_id);
+
     $amount = $amount / $countUser;
+    $amount =floatval(number_format($amount,2, '.',''));
+    // var_dump ($amount);die;
     $expenditureManager->createExpenditure($expenditureName, $flat_share_id, $amount, $creation_date, $id_creator, $queryUser);
   }
   #[Route('/update_payed', name: "payed-expenditure", methods: ["POST", "GET"])]
@@ -37,9 +43,15 @@ class ExpenditureController extends AbstractController
   public function getUserExpenditure()
   {
     $userId = $_REQUEST['user_id'];
-    $expenditureId = $_REQUEST['expenditureId'];
+    $flat_share_id = $_REQUEST['flat_share_id'];
     $expenditureManageGet = new ExpenditureManager(new PDOFactory());
-    $data = $expenditureManageGet->UserExpenditure($userId, $expenditureId);
+    $getMonthFee= $expenditureManageGet->getMonthFee($flat_share_id);
+
+    if ($getMonthFee['date']==date('d')){
+
+    }
+    // $getMonthFeeDate=$expenditureManageGet->UserExpenditure($flat_share_id);
+    $data = $expenditureManageGet->UserExpenditure($userId, $flat_share_id);
     $this->renderJson($data);
   }
   #[Route('/deleteExpenditure', name: "delete-expenditure", methods: ["POST", "GET"])]
@@ -70,5 +82,14 @@ class ExpenditureController extends AbstractController
     $expenditureManagerDelete = new ExpenditureManager(new PDOFactory());
 
     $expenditureManagerDelete->deleteMonthFee($monthFeedId);
+  }
+  #[Route('/getMonthFee', name: "get-month", methods: ["POST", "GET"])]
+  public function getMonthFee()
+  {
+    $flat_share_id= $_REQUEST['flat_share_id'];
+
+    $expenditureManagerGetMonth = new ExpenditureManager(new PDOFactory());
+
+    $expenditureManagerGetMonth->getMonthFee($flat_share_id);
   }
 }
