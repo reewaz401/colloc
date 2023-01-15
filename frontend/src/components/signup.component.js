@@ -1,24 +1,56 @@
 import React, { Component, useState } from 'react'
-import { postSignOut } from '../controller/user_controller';
+import { postsignIn, postSignOut, postsignUp } from '../controller/user_controller';
+import { Snackbar } from '@mui/material';
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
+import { handlePostFormReq } from '../utils/req';
+import { storeUserInfo } from '../store/actions/simpleAction';
 export default function Login() {
   const [userInfo, setUesrInfo] = useState({
-    prenom: "",
-    nom: "",
-    identifiant: "",
-    mail: "",
-    password: "",
-
+firstname: "",
+lastname: "",
+username: "",
+email: "",
+pwd: "",
   });
+  const dispatch = useDispatch();
+  const [showSnack, setShowSanck] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
+  const navigate = useNavigate();
   const handleChange = (event) => {
     setUesrInfo({ ...userInfo, [event.target.name]: event.target.value });
   };
-  const handleSubmit = (event) => {
-    postSignOut(userInfo);
-    // prevents the submit button from refreshing the page
+  const handleClose = (event,reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setShowSanck(false);
+  };
+  const handleSubmit = async(event) => {
     event.preventDefault();
+    try {
+      let response = await handlePostFormReq("/signin", userInfo);
+      if (response.status !== 200) {
+        setShowSanck(true);
+        setErrMessage(response.data);
+      } else {
+        dispatch(storeUserInfo(response.data));
+        navigate("/home");
+      }
+    } catch (err) {
+      setShowSanck(true);
+      setErrMessage("Something is wrong");
+    }    
     
   };
   return (
+    <>
+         <Snackbar
+      message={errMessage}
+      autoHideDuration={4000}
+      open={showSnack}
+      onClose={handleClose}
+    ></Snackbar>
     <div className="auth-wrapper">
     <div className='auth-inner'>
       <form onSubmit={handleSubmit}>
@@ -27,10 +59,10 @@ export default function Login() {
           <label>Prenom</label>
           <input
             type="text"
-            name="prenom"
+            name="firstname"
             className="form-control"
             placeholder="Prenom"
-            value={userInfo.prenom}
+            value={userInfo.firstname}
             onChange={handleChange}
           />
         </div>
@@ -38,10 +70,10 @@ export default function Login() {
           <label>Nom</label>
           <input
             type="text"
-            name="nom"
+            name="lastname"
             className="form-control"
             placeholder="Nom"
-            value={userInfo.nom}
+            value={userInfo.lastname}
             onChange={handleChange}
           />
         </div>
@@ -50,10 +82,10 @@ export default function Login() {
           <label>Identifiant</label>
           <input
             type="text"
-            name="identifiant"
+            name="username"
             className="form-control"
             placeholder="Identifiant"
-            value={userInfo.identifiant}
+            value={userInfo.username}
             onChange={handleChange}
            
           />
@@ -62,10 +94,10 @@ export default function Login() {
           <label>Email address</label>
           <input
             type="email"
-            name="mail"
+            name="email"
             className="form-control"
             placeholder="Enter email"
-            value={userInfo.mail}
+            value={userInfo.email}
             onChange={handleChange}
           />
         </div>
@@ -73,10 +105,10 @@ export default function Login() {
           <label>Password</label>
           <input
             type="password"
-            name="password"
+            name="pwd"
             className="form-control"
             placeholder="Enter password"
-            value={userInfo.password}
+            value={userInfo.pwd}
             onChange={handleChange}
            
           />
@@ -101,12 +133,10 @@ export default function Login() {
             Submit
           </button>
         </div>
-        <p className="forgot-password text-right">
-          Forgot <a href="#">password?</a>
-        </p>
         </form>
         </div>
-        </div>
+      </div>
+      </>
     )
 }
 
