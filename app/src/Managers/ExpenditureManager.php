@@ -72,4 +72,26 @@ class ExpenditureManager extends BaseManager
     $querydeleteExpenditure->bindValue('uniqId', $data['uniqId'], \PDO::PARAM_INT);
     $querydeleteExpenditure->execute();
   }
+  public function createMonthFee(string $feeName, int $flat_share_id, int $feeAmount, int $date)
+  {
+
+
+      $query = $this->pdo->prepare('INSERT INTO monthly_fee ( flat_share_id ,fee_amount,fee_name,date) VALUES (:flat_share_id, :fee_amount, :fee_name, :date)');
+      $query->bindValue('fee_name', $feeName, \PDO::PARAM_STR);
+      $query->bindValue('flat_share_id', $flat_share_id, \PDO::PARAM_INT);
+      $query->bindValue('fee_amount', ($feeAmount), \PDO::PARAM_INT);
+      $query->bindValue('date', $date, \PDO::PARAM_INT);
+      $query->execute();
+
+  }
+  public function deleteMonthFee(int $monthFeeId)
+  {
+
+
+      $querydeleteMonthFee = $this->pdo->prepare('DELETE  FROM monthly_fee WHERE id =:id ');
+      $querydeleteMonthFee->bindValue('id', $monthFeeId, \PDO::PARAM_INT);
+
+      $querydeleteMonthFee->execute();
+
+  }
 }
