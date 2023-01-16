@@ -220,7 +220,7 @@ class FlatshareManager extends BaseManager
     public function selectAllRoommate(int $flatshare_id):array|\Exception
     {
         try {
-            $query = $this->pdo->prepare("SELECT * FROM roommate
+            $query = $this->pdo->prepare("SELECT roommate.id, roommate.email FROM roommate
                 LEFT JOIN roomate_has_flat_share ON roommate.id = roomate_has_flat_share.roommate_id
                 LEFT JOIN flat_share ON flat_share.id = roomate_has_flat_share.flat_share_id
                 WHERE flat_share.id = :id");

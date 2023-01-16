@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
@@ -27,39 +27,52 @@ const rows = [
   { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
   { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
 ];
-
+// function useForceUpdate() {
+//   const [value, setValue] = useState(0); // integer state
+//   return () => setValue((value) => value + 1); // update state to force render
+//   // A function that increment 👆🏻 the previous state like here
+//   // is better than directly setting `setValue(value + 1)`
+// }
 export default function InviteColloc() {
   const { flatId } = useSelector((state) => state.auth);
+  const [, updateState] = React.useState();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
   const navigate = useNavigate();
+
   const [selectColloc, setSelectColloc] = useState();
   const [emailColloc, setEmailColloc] = useState({
-    id_flatshare: null,
+    id_flatshare: flatId,
     role: 0,
     new_roomate: null,
   });
-  const [colloc, setColloc] = useState([
-    { id: 1, email: "Snow" },
-    { id: 2, email: "Lannister" },
-    { id: 3, email: "Lannister" },
-    { id: 4, email: "Stark" },
-    { id: 5, email: "Targaryen" },
-    { id: 6, email: "Melisandre" },
-    { id: 7, email: "Clifford" },
-    { id: 8, email: "Frances" },
-    { id: 9, email: "Roxie" },
-  ]);
+  const [refreshKey, setRefreshKey] = useState(flatId);
+  const [colloc, setColloc] = useState([]);
   const handleCreate = () => {
     createColloc();
     navigate("/home");
   };
+  useEffect(() => {
+    const getRoommate = () => {
+      console.log("HEY");
+      handlePostFormReq("/select_all_roommate", {
+        id_flatshare: flatId,
+      }).then((res) => {
+        setColloc(res.data);
+      });
+    };
+    getRoommate();
+  }, []);
+
   const handleAddRoommate = async (email) => {
-    await handlePostFormReq("/add_roommate", emailColloc);
-    setEmailColloc({
-      id_flatshare: null,
-      role: null,
-      new_roomate: null,
+    console.log("handleAddRoommate");
+    await handlePostFormReq("/add_roommate", emailColloc).then(() => {
+      console.log("ami");
+      var ref = refreshKey;
+      forceUpdate();
+      setRefreshKey(ref++);
     });
   };
+
   return (
     <div
       style={{
@@ -89,13 +102,11 @@ export default function InviteColloc() {
         aria-label="add to shopping cart"
         onClick={(e) => {
           console.log("ONE CLICK");
-          setEmailColloc({
-            id_flatshare: flatId,
-            role: 0,
-            new_roomate: emailColloc,
-          });
+          console.log(flatId);
+
+          console.log(emailColloc);
           handleAddRoommate();
-          setColloc((colloc) => colloc.concat({ id: 10, email: emailColloc }));
+          // setColloc((colloc) => colloc.concat({ id: 10, email: emailColloc }));
         }}
       >
         <AddIcon />

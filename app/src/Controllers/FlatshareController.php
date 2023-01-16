@@ -104,11 +104,7 @@ class FlatshareController extends AbstractController
         $this->renderJson("La collocation $nameFlatshare a été modifiée avec succès !");
     }
 
-<<<<<<< HEAD
-    #[Route('/selectInfos', name: "y", methods: ["GET"])]
-=======
     #[Route('/select_infos', name: "selectinfos", methods: ["GET", "POST"])]
->>>>>>> test
     public function selectInfos()
     {
         $id_flatshare = $_REQUEST['id_flatshare'];
