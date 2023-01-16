@@ -10,9 +10,9 @@ trait Notif
       date_default_timezone_set('Europe/Berlin');
       $notif_date=strtotime($notif_date);
       if(time('d')<$notif_date){
-
+        return ('0');
       }else{
-
+        return ('1');
       }
     }
 }

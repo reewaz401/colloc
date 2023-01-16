@@ -32,7 +32,7 @@ CREATE TABLE `expenditure` (
   `roommate_id` int(11) NOT NULL,
   `flat_share_id` int(11) NOT NULL,
   `expenditure_name` varchar(255) NOT NULL,
-  `amount` int(11) NOT NULL,
+  `amount` float NOT NULL,
   `creation_date` date NOT NULL DEFAULT current_timestamp(),
   `payed` tinyint(1) NOT NULL DEFAULT 0,
   `uniqId` varchar(255) NOT NULL
