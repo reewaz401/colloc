@@ -1,56 +1,24 @@
 import React, { Component, useState } from 'react'
-import { postsignIn, postSignOut, postsignUp } from '../controller/user_controller';
-import { Snackbar } from '@mui/material';
-import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux';
-import { handlePostFormReq } from '../utils/req';
-import { storeUserInfo } from '../store/actions/simpleAction';
+import { postSignOut } from '../controller/user_controller';
 export default function Login() {
   const [userInfo, setUesrInfo] = useState({
-firstname: "",
-lastname: "",
-username: "",
-email: "",
-pwd: "",
+    prenom: "",
+    nom: "",
+    identifiant: "",
+    mail: "",
+    password: "",
+
   });
-  const dispatch = useDispatch();
-  const [showSnack, setShowSanck] = useState(false);
-  const [errMessage, setErrMessage] = useState("");
-  const navigate = useNavigate();
   const handleChange = (event) => {
     setUesrInfo({ ...userInfo, [event.target.name]: event.target.value });
   };
-  const handleClose = (event,reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setShowSanck(false);
-  };
-  const handleSubmit = async(event) => {
+  const handleSubmit = (event) => {
+    postSignOut(userInfo);
+    // prevents the submit button from refreshing the page
     event.preventDefault();
-    try {
-      let response = await handlePostFormReq("/signin", userInfo);
-      if (response.status !== 200) {
-        setShowSanck(true);
-        setErrMessage(response.data);
-      } else {
-        dispatch(storeUserInfo(response.data));
-        navigate("/home");
-      }
-    } catch (err) {
-      setShowSanck(true);
-      setErrMessage("Something is wrong");
-    }    
     
   };
   return (
-    <>
-         <Snackbar
-      message={errMessage}
-      autoHideDuration={4000}
-      open={showSnack}
-      onClose={handleClose}
-    ></Snackbar>
     <div className="auth-wrapper">
     <div className='auth-inner'>
       <form onSubmit={handleSubmit}>
@@ -59,10 +27,10 @@ pwd: "",
           <label>Prenom</label>
           <input
             type="text"
-            name="firstname"
+            name="prenom"
             className="form-control"
             placeholder="Prenom"
-            value={userInfo.firstname}
+            value={userInfo.prenom}
             onChange={handleChange}
           />
         </div>
@@ -70,10 +38,10 @@ pwd: "",
           <label>Nom</label>
           <input
             type="text"
-            name="lastname"
+            name="nom"
             className="form-control"
             placeholder="Nom"
-            value={userInfo.lastname}
+            value={userInfo.nom}
             onChange={handleChange}
           />
         </div>
@@ -82,10 +50,10 @@ pwd: "",
           <label>Identifiant</label>
           <input
             type="text"
-            name="username"
+            name="identifiant"
             className="form-control"
             placeholder="Identifiant"
-            value={userInfo.username}
+            value={userInfo.identifiant}
             onChange={handleChange}
            
           />
@@ -94,10 +62,10 @@ pwd: "",
           <label>Email address</label>
           <input
             type="email"
-            name="email"
+            name="mail"
             className="form-control"
             placeholder="Enter email"
-            value={userInfo.email}
+            value={userInfo.mail}
             onChange={handleChange}
           />
         </div>
@@ -105,10 +73,10 @@ pwd: "",
           <label>Password</label>
           <input
             type="password"
-            name="pwd"
+            name="password"
             className="form-control"
             placeholder="Enter password"
-            value={userInfo.pwd}
+            value={userInfo.password}
             onChange={handleChange}
            
           />
@@ -133,10 +101,12 @@ pwd: "",
             Submit
           </button>
         </div>
+        <p className="forgot-password text-right">
+          Forgot <a href="#">password?</a>
+        </p>
         </form>
         </div>
-      </div>
-      </>
+        </div>
     )
 }
 

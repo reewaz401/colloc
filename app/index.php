@@ -49,5 +49,5 @@ foreach ($routesObj as $route) {
 }
 
 echo "NO MATCH";
-echo date(d);
+
 die;

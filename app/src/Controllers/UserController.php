@@ -12,11 +12,9 @@ class UserController extends AbstractController
     #[Route('/login', name: "login", methods: ["GET"])]
     public function login()
     {
-
         $sessionManager = new SessionManager();
         $logStatut = $sessionManager->check_login();
 
-        
     }
 
     #[Route('/logout', name: "logout", methods: ["GET"])]
@@ -40,11 +38,11 @@ class UserController extends AbstractController
         $sessionManager = new SessionManager();
 
         $login = filter_input(INPUT_POST, "login");
-        $getUser = $userManager->readUserReturn($username);
-   
+        $getUser = $userManager->readUser($username);
+
         if(isset($getUser[0])){
             if (!password_verify($pwd, $getUser[0]->getPwd())){
-                $this->renderJson("Identifiants incorrects",403);
+                $this->renderJsonError(403, "Identifiants incorrects");
             }
             elseif(password_verify($pwd, $getUser[0]->getPwd())){
                 $sessionManager->login($username);
@@ -53,7 +51,7 @@ class UserController extends AbstractController
                 $this->renderJson([$getUserInfo]);
             }  
         }else{
-            $this->renderJson("Identifiants incorrects",403);
+            $this->renderJsonError(403, "Identifiants incorrects");
 
         }
     }
@@ -73,11 +71,11 @@ class UserController extends AbstractController
         $userManager = new UserManager(new PDOFactory());
 
         $signin = filter_input(INPUT_POST, "signin");
-        $getUser = $userManager->readUserReturn($username);
+        $getUser = $userManager->readUser($username);
 
         
         if(isset($getUser[0])){
-            $this->renderJson("Ce pseudo est déja utilisé, veuillez en choisir un autre.", 403);
+            $this->renderJsonError(403, "Ce pseudo est déja utilisé, veuillez en choisir un autre.");
         }else{
             $userManager->creatUser($username, $pwd_hash, $firstname, $lastname, $email, $birthdate);
 

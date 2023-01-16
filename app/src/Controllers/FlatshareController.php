@@ -3,6 +3,7 @@
 namespace App\Controllers;
 use App\Factories\PDOFactory;
 use App\Managers\FlatshareManager;
+use App\Managers\ExpenditureManager;
 use App\Managers\UserManager;
 use App\Routes\Route;
 
@@ -126,7 +127,21 @@ class FlatshareController extends AbstractController
             $this->renderJson("Impossible de récupérer les infos liées à la collocation $nameFlatshare, veuillez réessayer !", 501);
             die;
         }
+         $expenditureManager = new ExpenditureManager(new PDOFactory());
+         $getMonthFee= $expenditureManager->getMonthFee($id_flatshare);
+
+        if ($getMonthFee['date']==date('d')){
+          $expenditureName=$getMonthFee['fee_name'];
+          $expenditureAmount=$getMonthFee['fee_amount'];
+          $countUser = $expenditureManager->countUser($id_flatshare);
+          $queryUser = $expenditureManager->userFlatShare($id_flatshare);
+
+        $expenditureAmount = $expenditureAmount / $countUser;
+        $expenditureAmount =floatval(number_format($expenditureAmount,2, '.',''));
+           $expenditureManager->createExpenditure($expenditureName, $id_flatshare, $expenditureAmount, null, $queryUser);
+         }
         $this->renderJson($data);
+
     }
 
     #[Route('/selectAll', name: "selectall", methods: ["GET"])]
@@ -253,3 +268,4 @@ class FlatshareController extends AbstractController
         $this->renderJson($data);
     }
 }
+

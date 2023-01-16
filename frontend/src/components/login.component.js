@@ -1,67 +1,33 @@
 import React, { Component, useState } from 'react'
 import { postsignIn } from '../controller/user_controller';
-import { useNavigate } from 'react-router-dom'
-import Button from '@mui/material/Button';
 import '../index.css'
 import SimpleSnackBar from './snackBar';
-import { Snackbar } from '@mui/material';
-import { handlePostFormReq, handlePostReq } from '../utils/req';
-import { useDispatch } from 'react-redux';
-import { storeUserInfo } from '../store/actions/simpleAction';
 export default function Login() {
-  const dispatch = useDispatch();
-  const [userInfo, setUesrInfo] = useState({username:"",pwd:""});
+  const [userInfo, setUesrInfo] = useState({mail:"",password:""});
   const [showSnack, setShowSanck] = useState(false);
-  const [errMessage, setErrMessage] = useState("");
-  const navigate = useNavigate();
   const handleChange = (event) => {
     setUesrInfo({ ...userInfo, [event.target.name]: event.target.value });
   };
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
+    postsignIn(userInfo);
+    // prevents the submit button from refreshing the page
     event.preventDefault();
-    try {
-      let response = await handlePostFormReq("/login", userInfo);
-      if (response.status !== 200) {
-        setShowSanck(true);
-        setErrMessage(response.data);
-      } else {
-        dispatch(storeUserInfo(response.data));
-        navigate("/home");
-      }
-    } catch (err) {
-      setShowSanck(true);
-      setErrMessage("Something is wrong");
-    }    
+    
   };
-
-  const handleClose = (event,reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setShowSanck(false);
-  };
-  const handleResetPwd = (event) => {
-    navigate("/repwd")
-  }
   return (<>
-    <Snackbar
-      message={errMessage}
-      autoHideDuration={4000}
-      open={showSnack}
-      onClose={handleClose}
-    ></Snackbar>
+    <SimpleSnackBar show={showSnack}/>
     <div className="auth-wrapper">
       <div className='auth-inner'>
       <form onSubmit={handleSubmit}>
         <h3>Sign In</h3>
         <div className="mb-3">
-          <label>Email username</label>
+          <label>Email address</label>
           <input
-            type="text"
-            name="username"
+            type="email"
+            name="mail"
             className="form-control"
-            placeholder="Enter username"
-            value={userInfo.username}
+            placeholder="Enter email"
+            value={userInfo.mail}
             onChange={handleChange}
           />
         </div>
@@ -70,10 +36,10 @@ export default function Login() {
           <label>Password</label>
           <input
             type="password"
-            name="pwd"
+            name="password"
             className="form-control"
             placeholder="Enter password"
-            value={userInfo.pwd}
+            value={userInfo.password}
             onChange={handleChange}
            
           />
@@ -97,7 +63,9 @@ export default function Login() {
             Submit
           </button>
         </div>
-            <Button onClick={handleResetPwd}>Forgot password?</Button> 
+        <p className="forgot-password text-right">
+          Forgot <a href="#">password?</a>
+        </p>
       </form>
       </div>
     </div>
