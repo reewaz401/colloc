@@ -233,6 +233,29 @@ class FlatshareManager extends BaseManager
         } catch (\Exception $e) {
             return $e;
         }
+    }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function test()
+    {
+        $query = $this->pdo->query('SELECT * FROM all_infos ');
+            $query->execute();
+
+            $data = $query->fetch(\PDO::FETCH_ASSOC);
+
+        var_dump($data);
     }
 }

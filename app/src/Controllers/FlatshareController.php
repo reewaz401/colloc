@@ -253,5 +253,14 @@ class FlatshareController extends AbstractController
         // all success //
         $this->renderJson($data);
     }
+
+
+
+    #[Route('/test_request', name: "kickRoommate", methods: ["POST", "GET"])]
+    public function testrequest()
+    {
+        $flatshareManager = new FlatshareManager(new PDOFactory());
+        $flatshareManager->test();
+    }
 }
 
