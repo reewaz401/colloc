@@ -41,11 +41,6 @@ class UserManager extends BaseManager
             return $e;
         } 
     }
-<<<<<<< HEAD
-    
-
-=======
->>>>>>> test
 
     public function readUserById(int $id):User|\Exception
     {

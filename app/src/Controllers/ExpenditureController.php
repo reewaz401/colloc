@@ -24,8 +24,8 @@ class ExpenditureController extends AbstractController
     $expenditureManager = new ExpenditureManager(new PDOFactory());
     $countUser = $expenditureManager->countUser($flat_share_id);
     $queryUser = $expenditureManager->userFlatShare($flat_share_id);
-    var_dump($queryUser);die;
-    $amount = $amount / $countUser;
+    if($countUser > 0) $amount = $amount / $countUser;
+    else $amount = 0;
     $amount =floatval(number_format($amount,2, '.',''));
     // var_dump ($amount);die;
     $expenditureManager->createExpenditure($expenditureName, $flat_share_id, $amount, $id_creator, $queryUser);
