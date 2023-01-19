@@ -38,7 +38,7 @@ class UserController extends AbstractController
         $sessionManager = new SessionManager();
 
         $login = filter_input(INPUT_POST, "login");
-        $getUser = $userManager->readUser($username);
+        $getUser = $userManager->readUserReturn($username);
 
         if(isset($getUser[0])){
             if (!password_verify($pwd, $getUser[0]->getPwd())){
@@ -71,7 +71,7 @@ class UserController extends AbstractController
         $userManager = new UserManager(new PDOFactory());
 
         $signin = filter_input(INPUT_POST, "signin");
-        $getUser = $userManager->readUser($username);
+        $getUser = $userManager->readUserReturn($username);
 
         
         if(isset($getUser[0])){

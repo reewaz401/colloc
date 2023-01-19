@@ -130,7 +130,7 @@ class FlatshareController extends AbstractController
          $expenditureManager = new ExpenditureManager(new PDOFactory());
          $getMonthFee= $expenditureManager->getMonthFee($id_flatshare);
 
-        if ($getMonthFee['date']==date('d')){
+        if ($getMonthFee && $getMonthFee['date']== date('d')){
           $expenditureName=$getMonthFee['fee_name'];
           $expenditureAmount=$getMonthFee['fee_amount'];
           $countUser = $expenditureManager->countUser($id_flatshare);
