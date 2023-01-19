@@ -168,7 +168,7 @@ class FlatshareController extends AbstractController
 
         $userManager = new UserManager(new PDOFactory());
 
-        $result = $userManager->readUser($email_new_roommate);
+        $result = $userManager->readUserEmail($email_new_roommate);
 
         if ($result instanceof \Exception) {
             $this->renderJson("Nous n'arrivons pas à effectuer l'ajout du collocataire, vérifiez que le compte du collocataire est toujours existant !", 401);
@@ -209,7 +209,7 @@ class FlatshareController extends AbstractController
 
         $userManager = new UserManager(new PDOFactory());
 
-        $result = $userManager->readUser($email_roommate);
+        $result = $userManager->readUserEmail($email_roommate);
 
         if ($result instanceof \Exception) {
             $this->renderJson("Nous n'arrivons pas à effectuer la suppression vérifiez que le collocataire est toujours dans la collocation ou/et que son compte est toujours existant !", 401);
