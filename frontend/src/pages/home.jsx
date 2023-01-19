@@ -23,7 +23,7 @@ export default function Home() {
     const dataFetch = async () => {
       const res = await handleGetReq("/selectAll");
       console.log("FOF", res.data.data);
-      setFlatShare(res.data.data.reverse());
+      setFlatShare(res.data.data);
     };
     dataFetch();
     // Update the document title using the browser API
