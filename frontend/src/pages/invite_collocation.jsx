@@ -16,38 +16,20 @@ const columns = [
   { field: "email", headerName: "Email", width: 130 },
 ];
 
-const rows = [
-  { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-  { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-  { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-  { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-  { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-  { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-  { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-];
+const rows = [];
 
 export default function InviteColloc() {
   const { flatId } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [selectColloc, setSelectColloc] = useState();
+  const flatid = flatId;
+  console.log("FLATT ", flatid);
   const [emailColloc, setEmailColloc] = useState({
-    id_flatshare: null,
+    id_flatshare: flatid,
     role: 0,
     new_roomate: null,
   });
-  const [colloc, setColloc] = useState([
-    { id: 1, email: "Snow" },
-    { id: 2, email: "Lannister" },
-    { id: 3, email: "Lannister" },
-    { id: 4, email: "Stark" },
-    { id: 5, email: "Targaryen" },
-    { id: 6, email: "Melisandre" },
-    { id: 7, email: "Clifford" },
-    { id: 8, email: "Frances" },
-    { id: 9, email: "Roxie" },
-  ]);
+  const [colloc, setColloc] = useState([]);
   const handleCreate = () => {
     createColloc();
     navigate("/home");
@@ -120,7 +102,7 @@ export default function InviteColloc() {
       ) : (
         <div></div>
       )}
-
+      {/* 
       <DataGrid
         rows={colloc}
         columns={columns}
@@ -131,14 +113,14 @@ export default function InviteColloc() {
           setSelectColloc(rowData);
           console.log(rowData, rowState);
         }}
-      />
+      /> */}
       <div className="mt-3">
         <Button
           variant="contained"
           endIcon={<SendIcon />}
           onClick={handleCreate}
         >
-          Create
+          Done
         </Button>
       </div>
       {/* <Button variant="contained" onClick={(e) => divideBudget(budget, colloc.length).then((rows) => setEachBudgett(rows))}>Divide</Button>

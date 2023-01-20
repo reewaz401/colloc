@@ -25,8 +25,6 @@ export async function handlePostFormReq(api, body, headers) {
   let backResponse;
   var bodyFormData = new FormData();
   let keys = Object.keys(body);
-  console.log(body);
-  console.log(keys);
   keys.forEach((key) => {
     bodyFormData.append(key, body[key]);
   })
@@ -34,17 +32,17 @@ export async function handlePostFormReq(api, body, headers) {
   await axios
     .post(`${api_baseUrl}${api}`, bodyFormData)
     .then(async(response) => {
-      backResponse = response.data;
+      backResponse = response;
       console.log(response.data);
       }).catch((err) =>{
         backResponse = {
           data: {
             status: 504,
-            message: "Something is wrong internally",
+            data: "Something is wrong internally",
           },
         };
       });
-  return backResponse;
+  return backResponse.data;
 }
 export async function handleGetReq(api) {
   let backResponse;

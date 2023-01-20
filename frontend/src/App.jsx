@@ -41,6 +41,7 @@ function SimpleDialog(props) {
   };
 
   const handleLogout = (value) => {
+    localStorage.setItem("user", "");
     onClose(value);
     dispatch(storeUserInfo(null));
     navigate("/sign-in");
@@ -92,7 +93,7 @@ function App() {
             </Link>
             <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
               <ul className="navbar-nav ml-auto">
-                {usersInfo ? (
+                {localStorage.getItem("user") ? (
                   <>
                     <li className="nav-item">
                       <Link className="nav-link" to={"/create_colloc"}>

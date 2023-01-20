@@ -6,9 +6,17 @@ export async function createColloc(collocInfo) {
 }
 export async function getColloc(collocInfo) { 
     //handlePostReq("/create_colloc", collocInfo );
-    handleGetReq("/view")
+    handlePostFormReq("/view", collocInfo);
 }
 export async function addRoommate(collocInfo) { 
     //handlePostReq("/create_colloc", collocInfo );
     handlePostFormReq("/add_roommate", collocInfo);
+}
+export async function getRoomate(collocInfo) { 
+    //handlePostReq("/create_colloc", collocInfo );
+    return handlePostFormReq("/select_all_roommate", collocInfo);
+}
+export async function kickRoomate(body) { 
+    //handlePostReq("/create_colloc", collocInfo );
+    return handlePostFormReq("/kick_roommate", body);
 }

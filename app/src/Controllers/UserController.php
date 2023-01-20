@@ -46,7 +46,7 @@ class UserController extends AbstractController
             }
             elseif(password_verify($pwd, $getUser->getPwd())){
                 $sessionManager->login($username);
-                $getUserInfo = $userManager->readUser($username);
+                $getUserInfo = $userManager->readUserReturn($username);
 
                 $this->renderJson([$getUserInfo]);
             }  

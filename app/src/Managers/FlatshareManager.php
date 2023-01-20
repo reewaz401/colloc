@@ -118,6 +118,8 @@ class FlatshareManager extends BaseManager
         }
     }
 
+
+
     /**
      * @param int $id
      * @return ?\Exception

@@ -34,6 +34,7 @@ pwd: "",
         setShowSanck(true);
         setErrMessage(response.data);
       } else {
+        localStorage.setItem("user", response.data);
         dispatch(storeUserInfo(response.data));
         navigate("/home");
       }

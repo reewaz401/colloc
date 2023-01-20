@@ -7,23 +7,25 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import PersonIcon from "@mui/icons-material/Person";
 import IconButton from "@mui/material/IconButton";
-import AddIcon from "@mui/icons-material/Add";
+import { useDispatch } from "react-redux";
 import HomeIcon from "@mui/icons-material/Home";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { handleGetReq } from "../utils/req";
+import { storeFlatInfo } from "../store/actions/flatIdAction";
 
 export default function Home() {
   const navigate = useNavigate();
   const { usersInfo } = useSelector((state) => state.auth);
   const [flatShare, setFlatShare] = useState([]);
   const divClick = () => {};
+  const dispatch = useDispatch();
   useEffect(() => {
     const dataFetch = async () => {
       const res = await handleGetReq("/selectAll");
       console.log("FOF", res.data.data);
-      setFlatShare(res.data.data);
+      setFlatShare(res.data.data.reverse());
     };
     dataFetch();
     // Update the document title using the browser API
@@ -63,7 +65,10 @@ export default function Home() {
               <CardActions>
                 <Button
                   size="small"
-                  onClick={() => navigate("/colloc_view/" + ele.id)}
+                  onClick={() => {
+                    dispatch(storeFlatInfo(ele));
+                    navigate("/colloc_view/" + ele.id);
+                  }}
                 >
                   More
                 </Button>

@@ -13,7 +13,10 @@ import { handlePostFormReq } from "../utils/req";
 import { useSelector } from "react-redux";
 import { storeFlatId } from "../store/actions/flatIdAction";
 export default function AddColloc() {
-  const userInfo = useSelector((state) => state.auth);
+  const { usersInfo } = useSelector((state) => state.auth);
+  console.log("USERS", usersInfo[0].id);
+  const userId = usersInfo[0].id;
+  console.log("USERSTOK", userId);
   const [numExpense, setNumExpense] = useState([1]);
   const [showSnack, setShowSanck] = useState(false);
   const [errMessage, setErrMessage] = useState("");
@@ -47,7 +50,7 @@ export default function AddColloc() {
     console.log(expense);
   };
   const [collocInfo, setCollocInfo] = useState({
-    id_creator: 2,
+    id_creator: userId,
     address: "6 rue jusdsdsdstin",
     name: "NASSCOLOC",
     start_date: "2023/02/01",
@@ -67,6 +70,7 @@ export default function AddColloc() {
   };
   const handleSubmit = async () => {
     //  event.preventDefault();
+    console.log("FKATE", collocInfo);
     try {
       let response = await handlePostFormReq("/create_flatshare", collocInfo);
 
@@ -98,7 +102,7 @@ export default function AddColloc() {
       ></Snackbar>
       <div className="auth-wrapper">
         <div className="auth-inner">
-          <h3>Creation du Collocation</h3>
+          <h3>Creation du Collocation du </h3>
 
           <div>
             <div className="mb-3">
